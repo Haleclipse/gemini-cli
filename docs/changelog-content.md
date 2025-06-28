@@ -2,6 +2,11 @@
 
 ## Update History
 
+### 2025-06-28 Update
+- **Commit Range**: 6742a1b7..ad7839ea
+- **New Commits**: 19
+- **Version**: 0.1.5 → 0.1.8
+
 ### 2025-06-27 Update
 - **Commit Range**: c55b15f7..6742a1b7
 - **New Commits**: 5
@@ -11,7 +16,41 @@
 - **Commit Range**: 05b9b9ab..c55b15f7
 - **Total Commits**: 30
 
-## Latest Changes（2025-06-27）
+## Latest Changes（2025-06-28）
+
+### 主要版本Update
+
+#### 重大技术升级
+- **[#2096](https://github.com/google-gemini/gemini-cli/pull/2096)** - **重大更改**: 升级至 Ink 6 和 React 19
+  - 这是一个重大技术栈升级，可能影响性能和兼容性
+
+#### New Features
+- **[#2059](https://github.com/google-gemini/gemini-cli/pull/2059)** - 添加隐私声明斜杠命令
+- **[#1972](https://github.com/google-gemini/gemini-cli/pull/1972)** - 处理输入提示的 stdin，使用 readline 进行转义字符解析
+- **[#2130](https://github.com/google-gemini/gemini-cli/pull/2130)** - Update认证标签以包含 AI Studio
+- **[#2112](https://github.com/google-gemini/gemini-cli/pull/2112)** - 在 about 消息中添加当前认证方法和 GCP 项目配置
+- **[#2310](https://github.com/google-gemini/gemini-cli/pull/2310)** - 使用 Gemini CLI 添加问题分类
+- **[#1152](https://github.com/google-gemini/gemini-cli/pull/1152)** - 为保存的检查点文件使用 2 空格缩进 (#1977)
+
+#### Bug Fixes和改进
+- **[#2304](https://github.com/google-gemini/gemini-cli/pull/2304)** - 在工具调用不正确的情况下Update错误处理
+- **[#2302](https://github.com/google-gemini/gemini-cli/pull/2302)** - 修复：添加缺失的 gaxios 依赖
+- **[#2246](https://github.com/google-gemini/gemini-cli/pull/2246)** - 修复循环依赖
+- **[#1961](https://github.com/google-gemini/gemini-cli/pull/1961)** - 优化回退消息，提供更多选项
+- **[#2029](https://github.com/google-gemini/gemini-cli/pull/2029)** - 进一步明确需要项目 ID 的情况
+- **[#2239](https://github.com/google-gemini/gemini-cli/pull/2239)** - 静默 dotenv 日志消息
+
+#### 版本Update
+- **[#2308](https://github.com/google-gemini/gemini-cli/pull/2308)** - chore: 升级到 0.1.8
+- **[#2285](https://github.com/google-gemini/gemini-cli/pull/2285)** - chore: 升级到 0.1.6
+
+#### 文档和修复
+- **[#1629](https://github.com/google-gemini/gemini-cli/pull/1629)** - 修复拼写错误
+- **[#1555](https://github.com/google-gemini/gemini-cli/pull/1555)** - chore: 修复 mcp-client 中的拼写错误
+- **[#2314](https://github.com/google-gemini/gemini-cli/pull/2314)** - 改进分类提示
+- **[#1480](https://github.com/google-gemini/gemini-cli/pull/1480)** - 修复拼写错误和格式问题
+
+## 之前的更改（2025-06-27）
 
 ### 2025-06-26(New)
 
