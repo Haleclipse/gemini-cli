@@ -9,7 +9,10 @@ Gemini CLI 需要您通过 Google 的 AI 服务进行身份验证。在初始启
    - 注意，网页登录必须在能够与运行 Gemini CLI 的机器通信的浏览器中完成。（具体地说，浏览器将被重定向到 Gemini CLI 将监听的 localhost url）。
    - <a id="workspace-gca">如果出现以下情况，用户可能需要指定 GOOGLE_CLOUD_PROJECT：</a>
      1. 您拥有 Google Workspace 账户。Google Workspace 是为企业和组织提供的付费服务，提供一套生产力工具，包括自定义电子邮件域（例如 your-name@your-company.com）、增强的安全功能和管理控制。这些账户通常由雇主或学校管理。
-     2. 您是许可的 Code Assist 用户。如果您之前购买了 Code Assist 许可证或通过 Google Developer Program 获得了许可证，就属于这种情况。
+     1. 您通过 [Google Developer Program](https://developers.google.com/program/plans-and-pricing) 获得了免费的 Code Assist 许可证（包括合格的 Google Developer Experts）
+     1. 您被分配了当前 Gemini Code Assist 标准版或企业版订阅的许可证。
+     1. 您在[支持地区](https://developers.google.com/gemini-code-assist/resources/available-locations)之外使用免费个人版本。
+     1. 您是 18 岁以下的 Google 账户持有者
      - 如果您属于上述类别之一，必须首先配置要使用的 Google Cloud 项目 ID，[启用 Gemini for Cloud API](https://cloud.google.com/gemini/docs/discover/set-up-gemini#enable-api) 并[配置访问权限](https://cloud.google.com/gemini/docs/discover/set-up-gemini#grant-iam)。您可以使用以下命令在当前 shell 会话中临时设置环境变量：
        ```bash
        export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"

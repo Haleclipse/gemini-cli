@@ -205,14 +205,7 @@ The Gemini CLI provides a comprehensive suite of tools for interacting with the 
   - On success: `Successfully modified file: /path/to/file.txt (1 replacements).` or `Created new file: /path/to/new_file.txt with provided content.`
   - On failure: An error message explaining the reason (e.g., `Failed to edit, 0 occurrences found...`, `Failed to edit, expected 1 occurrences but found 2...`).
 - **Confirmation:** Yes. Shows a diff of the proposed changes and asks for user approval before writing to the file.
-  - `new_string` (string, required): The exact literal text to replace `old_string` with.
-  - `expected_replacements` (number, optional): The number of occurrences to replace. Defaults to `1`.
-
-- **Behavior:**
-  - If `old_string` is empty and `file_path` does not exist, creates a new file with `new_string` as content.
-  - If `old_string` is provided, it reads the `file_path` and attempts to find exactly one occurrence of `old_string`.
-  - If one occurrence is found, it replaces it with `new_string`.
-  - **Enhanced Reliability (Multi-Stage Edit Correction):** To significantly improve the success rate of edits, especially when the model-provided `old_string` might not be perfectly precise, the tool incorporates a multi-stage edit correction mechanism.
+- **Enhanced Reliability (Multi-Stage Edit Correction):** To significantly improve the success rate of edits, especially when the model-provided `old_string` might not be perfectly precise, the tool incorporates a multi-stage edit correction mechanism.
     - If the initial `old_string` isn't found or matches multiple locations, the tool can leverage the Gemini model to iteratively refine `old_string` (and potentially `new_string`).
     - This self-correction process attempts to identify the unique segment the model intended to modify, making the `replace` operation more robust even with slightly imperfect initial context.
 - **Failure conditions:** Despite the correction mechanism, the tool will fail if:
