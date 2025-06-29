@@ -94,7 +94,7 @@ Gemini CLI 提供了一套全面的工具，用于与本地文件系统交互。
   - 返回匹配行的列表，每行都带有其文件路径（相对于搜索目录）和行号的前缀。
 - **输出（`llmContent`）：** 格式化的匹配字符串，例如：
   ```
-  Found 3 match(es) for pattern "myFunction" in path "." (filter: "*.ts"):
+  Found 3 matches for pattern "myFunction" in path "." (filter: "*.ts"):
   ---
   File: src/utils.ts
   L15: export function myFunction() {

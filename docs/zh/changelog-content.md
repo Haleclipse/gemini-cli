@@ -2,6 +2,11 @@
 
 ## 更新历史
 
+### 2025-06-29 更新
+- **提交范围**: ad7839ea..fc21d1ca
+- **新增提交数**: 15
+- **版本**: 仍为 v0.1.7（代码更新但未发布新版本）
+
 ### 2025-06-28 更新
 - **提交范围**: 6742a1b7..ad7839ea
 - **新增提交数**: 19
@@ -16,7 +21,31 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-06-28）
+## 最新更改（2025-06-29）
+
+### 新功能和增强
+- **[#2114](https://github.com/google-gemini/gemini-cli/pull/2114)** - 📦 新增：Shades of Purple 主题
+- **[#2299](https://github.com/google-gemini/gemini-cli/pull/2299)** - ✨ 新增：VSCodium 编辑器支持
+- **[#2527](https://github.com/google-gemini/gemini-cli/pull/2527)** - 🔧 修复：在错误状态下按 Esc 退出隐私屏幕
+
+### Bug 修复和改进
+- **[#2030](https://github.com/google-gemini/gemini-cli/pull/2030)** - 🛠️ 移除：删除不可操作但数量众多的调试日志
+- **[#2478](https://github.com/google-gemini/gemini-cli/pull/2478)** - 🔧 修复："修改流程"临时文件的文件扩展名
+- **[#2306](https://github.com/google-gemini/gemini-cli/pull/2306)** - 🔧 修复：编辑重新触发
+- **[#2344](https://github.com/google-gemini/gemini-cli/pull/2344)** - 🔧 chore：为 grep 工具中的匹配添加适当的复数处理
+
+### 文档更新
+- **[#2459](https://github.com/google-gemini/gemini-cli/pull/2459)** - 📝 文档：修复拼写错误和语法错误
+- **[#1790](https://github.com/google-gemini/gemini-cli/pull/1790)** - 📝 文档：删除 file-system.md 中的重复工具描述
+- **[#2229](https://github.com/google-gemini/gemini-cli/pull/2229)** - 📝 添加：关于 CI 环境变量的故障排除说明
+- **[#1487](https://github.com/google-gemini/gemini-cli/pull/1487)** - 📝 修复：纠正 create_alias.sh 中的启动脚本引用
+
+### 开发和工作流改进
+- **[#2496](https://github.com/google-gemini/gemini-cli/pull/2496)** - 🔧 chore(gha)：将问题分类工作流固定到特定提交
+- **[#2254](https://github.com/google-gemini/gemini-cli/pull/2254)** - 🔄 重新启用：Gemini Code Assist PR 审查机器人
+- **[#1709](https://github.com/google-gemini/gemini-cli/pull/1709)** - 🔧 内联：在源代码中内联 shell 工具的描述和架构
+
+## 之前的更改（2025-06-28）
 
 ### 主要版本更新
 
