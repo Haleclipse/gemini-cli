@@ -41,7 +41,8 @@ export default defineConfig({
                 { text: '配置', link: '/zh/cli/configuration' },
                 { text: '主题', link: '/zh/cli/themes' },
                 { text: '令牌缓存', link: '/zh/cli/token-caching' },
-                { text: '教程', link: '/zh/cli/tutorials' }
+                { text: '教程', link: '/zh/cli/tutorials' },
+                { text: '卸载', link: '/zh/Uninstall' }
               ]
             },
             {
@@ -49,7 +50,8 @@ export default defineConfig({
               collapsed: false,
               items: [
                 { text: '概览', link: '/zh/core/' },
-                { text: '工具 API', link: '/zh/core/tools-api' }
+                { text: '工具 API', link: '/zh/core/tools-api' },
+                { text: '内存导入处理器', link: '/zh/core/memport' }
               ]
             },
             {
@@ -118,7 +120,8 @@ export default defineConfig({
                 { text: 'Configuration', link: '/cli/configuration' },
                 { text: 'Themes', link: '/cli/themes' },
                 { text: 'Token Caching', link: '/cli/token-caching' },
-                { text: 'Tutorials', link: '/cli/tutorials' }
+                { text: 'Tutorials', link: '/cli/tutorials' },
+                { text: 'Uninstall', link: '/Uninstall' }
               ]
             },
             {
@@ -126,7 +129,8 @@ export default defineConfig({
               collapsed: false,
               items: [
                 { text: 'Overview', link: '/core/' },
-                { text: 'Tools API', link: '/core/tools-api' }
+                { text: 'Tools API', link: '/core/tools-api' },
+                { text: 'Memory Import Processor', link: '/core/memport' }
               ]
             },
             {
