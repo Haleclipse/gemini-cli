@@ -87,7 +87,7 @@ The processor automatically detects and prevents circular imports:
 
 # file-b.md
 
-@./file-a.md # This will be detected and prevented
+@./file-a.md  # This will be detected and prevented
 ```
 
 ### File Access Security
@@ -105,7 +105,7 @@ To prevent infinite recursion, there's a configurable maximum import depth (defa
 If you try to import a non-markdown file, you'll see a warning:
 
 ```markdown
-@./instructions.txt # This will show a warning and fail
+@./instructions.txt  # This will show a warning and fail
 ```
 
 Console output:
@@ -135,7 +135,7 @@ Processes import statements in GEMINI.md content.
 - `debugMode` (boolean, optional): Whether to enable debug logging (default: false)
 - `importState` (ImportState, optional): State tracking for circular import prevention
 
-**Returns:** Promise<string> - Processed content with imports resolved
+**Returns:** Promise&lt;string&gt; - Processed content with imports resolved
 
 ### `validateImportPath(importPath, basePath, allowedDirectories)`
 

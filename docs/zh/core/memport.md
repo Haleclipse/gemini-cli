@@ -87,7 +87,7 @@
 
 # file-b.md
 
-@./file-a.md <!-- 这将被检测并阻止 -->
+@./file-a.md  # 这将被检测并阻止
 ```
 
 ### 文件访问安全
@@ -105,7 +105,7 @@
 如果你尝试导入非 markdown 文件，你会看到警告：
 
 ```markdown
-@./instructions.txt <!-- 这将显示警告并失败 -->
+@./instructions.txt  # 这将显示警告并失败
 ```
 
 控制台输出：
@@ -135,7 +135,7 @@
 - `debugMode` (boolean, 可选)：是否启用调试日志记录（默认：false）
 - `importState` (ImportState, 可选)：用于循环导入预防的状态跟踪
 
-**返回：** Promise<string> - 已解析导入的处理内容
+**返回：** Promise&lt;string&gt; - 已解析导入的处理内容
 
 ### `validateImportPath(importPath, basePath, allowedDirectories)`
 
