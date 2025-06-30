@@ -2,6 +2,11 @@
 
 ## Update History
 
+### 2025-06-30 Update
+- **Commit Range**: 4e8a6400..5c4c833d
+- **New Commits**: 22
+- **Version**: 仍为 v0.1.7（代码Update但未发布新版本）
+
 ### 2025-06-29 Update
 - **Commit Range**: ad7839ea..fc21d1ca
 - **New Commits**: 15
@@ -21,7 +26,39 @@
 - **Commit Range**: 05b9b9ab..c55b15f7
 - **Total Commits**: 30
 
-## Latest Changes（2025-06-29）
+## Latest Changes（2025-06-30）
+
+### 主要功能Update
+- **[#2709](https://github.com/google-gemini/gemini-cli/pull/2709)** - 🔐 修复 OAuth 凭证缓存问题
+- **[#2653](https://github.com/google-gemini/gemini-cli/pull/2653)** - 🛠️ 为 shell 命令启用前缀匹配以实现灵活的命令验证
+- **[#2615](https://github.com/google-gemini/gemini-cli/pull/2615)** - 📊 改进 /stats 命令显示更详细的统计信息
+- **[#2477](https://github.com/google-gemini/gemini-cli/pull/2477)** - 🌐 添加对远程 MCP 服务器自定义 HTTP 头的支持
+- **[#1524](https://github.com/google-gemini/gemini-cli/pull/1524)** - 💡 添加 hideTips 设置选项
+
+### 用户界面改进
+- **[#2507](https://github.com/google-gemini/gemini-cli/pull/2507)** - ✨ 高亮显示之前的用户输入
+- **[#2043](https://github.com/google-gemini/gemini-cli/pull/2043)** - 🔧 修复不同操作系统的换行键组合显示
+- **[#2230](https://github.com/google-gemini/gemini-cli/pull/2230)** - 📝 模块化 GEMINI.md 导入功能（@file.md 语法）
+
+### 安全与配置
+- **[#2605](https://github.com/google-gemini/gemini-cli/pull/2605)** - 🔧 允许对 ShellTool 进行特定命令限制
+- **[#2572](https://github.com/google-gemini/gemini-cli/pull/2572)** - 📄 添加 .editorconfig 配置文件
+
+### 文档Update
+- **[#1985](https://github.com/google-gemini/gemini-cli/pull/1985)** - 📖 添加卸载说明到 README
+- **[#1448](https://github.com/google-gemini/gemini-cli/pull/1448)** - 🎨 添加 Neovim 编辑器支持
+- **[#2495](https://github.com/google-gemini/gemini-cli/pull/2495)** - 📝 澄清 .gemini/config.yaml 是用于 PR 审查机器人（非 CLI）
+- **[#2592](https://github.com/google-gemini/gemini-cli/pull/2592)** - 🔧 修复认证设置文档标题问题
+
+### Bug 修复与优化
+- **[#2463](https://github.com/google-gemini/gemini-cli/pull/2463)** - 🔧 修复 EditTool 中出现次数的复数形式
+- **[#1875](https://github.com/google-gemini/gemini-cli/pull/1875)** - 🛠️ 修复 clearcut-logger.ts 中的事件名称
+- **[#2574](https://github.com/google-gemini/gemini-cli/pull/2574)** - 🔄 重构：移除不必要的 "await"
+- **[#2579](https://github.com/google-gemini/gemini-cli/pull/2579)** - 🔄 重构：移除不必要的断言
+- **[#1846](https://github.com/google-gemini/gemini-cli/pull/1846)** - 🔄 重构：移除重复导入
+- **[#1840](https://github.com/google-gemini/gemini-cli/pull/1840)** - 🔄 重构：使用 for...of 循环替代传统 for 循环
+
+## 之前的更改（2025-06-29）
 
 ### New Features和增强
 - **[#2114](https://github.com/google-gemini/gemini-cli/pull/2114)** - 📦 新增：Shades of Purple 主题
