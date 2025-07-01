@@ -4,6 +4,11 @@
 
 ## 更新历史
 
+### 2025-07-01 更新
+- **提交范围**: 5c4c833d..58b14b7c
+- **新增提交数**: 17
+- **版本**: 仍为 v0.1.7（代码更新但未发布新版本）
+
 ### 2025-06-30 更新
 - **提交范围**: 4e8a6400..5c4c833d
 - **新增提交数**: 22
@@ -28,7 +33,36 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-06-30）
+## 最新更改（2025-07-01）
+
+### 新功能和改进
+- **[#2855](https://github.com/google-gemini/gemini-cli/pull/2855)** - 🎯 添加每周社区报告工作流
+- **[#1955](https://github.com/google-gemini/gemini-cli/pull/1955)** - 📊 添加 Markdown 表格渲染支持
+- **[#2771](https://github.com/google-gemini/gemini-cli/pull/2771)** - ✨ 重构退出统计显示界面
+- **[#2747](https://github.com/google-gemini/gemini-cli/pull/2747)** - 🗜️ 使用结构化提示进行压缩
+
+### 身份验证和认证改进
+- **[#2769](https://github.com/google-gemini/gemini-cli/pull/2769)** - 🔧 重命名 AuthType：LOGIN_WITH_GOOGLE_PERSONAL → LOGIN_WITH_GOOGLE
+- **[#2402](https://github.com/google-gemini/gemini-cli/pull/2402)** - 📝 澄清环境文件发现机制和推荐配置
+
+### Bug 修复
+- **[#2794](https://github.com/google-gemini/gemini-cli/pull/2794)** - 🐛 修复 Ink6 + React19 迁移导致的 MaxSizedBox 无效子元素日志问题
+- **[#1990](https://github.com/google-gemini/gemini-cli/pull/1990)** - 🔧 使清理脚本跨平台兼容
+- **[#2762](https://github.com/google-gemini/gemini-cli/pull/2762)** - 🔗 在文档中使用 HTTPS 并修复故障排除指南格式错误
+- **[#2712](https://github.com/google-gemini/gemini-cli/pull/2712)** - 🔧 修复 CODE_ASSIST_ENDPOINT 环境变量
+
+### 工作流和自动化改进
+- **[#2778](https://github.com/google-gemini/gemini-cli/pull/2778)** - 🤖 改进自动化问题分类工作流
+- **[#2759](https://github.com/google-gemini/gemini-cli/pull/2759)** - 🔧 在分类工作流中使用预览版本的 gemini-cli
+- **[#2749](https://github.com/google-gemini/gemini-cli/pull/2749)** - 📋 向自动分类工作流添加问题列表命令
+- **[#2746](https://github.com/google-gemini/gemini-cli/pull/2746)** - 🔄 将问题分类分离为两个工作流
+
+### 代码清理和优化
+- **[#2772](https://github.com/google-gemini/gemini-cli/pull/2772)** - 📦 更新检查和测试优化
+- **[#2721](https://github.com/google-gemini/gemini-cli/pull/2721)** - 🧹 移除未使用的方法
+- **[#2761](https://github.com/google-gemini/gemini-cli/pull/2761)** - 🧹 移除 gaia id 日志记录的回退逻辑
+
+## 之前的更改（2025-06-30）
 
 ### 主要功能更新
 - **[#2709](https://github.com/google-gemini/gemini-cli/pull/2709)** - 🔐 修复 OAuth 凭证缓存问题

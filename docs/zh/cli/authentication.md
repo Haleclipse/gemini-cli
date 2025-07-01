@@ -17,7 +17,7 @@ Gemini CLI 需要您通过 Google 的 AI 服务进行身份验证。在初始启
        ```bash
        export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"
        ```
-       - 为了重复使用，您可以将环境变量添加到您的 `.env` 文件（位于项目目录或用户主目录）或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
+       - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
        ```bash
        echo 'export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"' >> ~/.bashrc
        source ~/.bashrc
@@ -31,7 +31,7 @@ Gemini CLI 需要您通过 Google 的 AI 服务进行身份验证。在初始启
        ```bash
        export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"
        ```
-     - 为了重复使用，您可以将环境变量添加到您的 `.env` 文件（位于项目目录或用户主目录）或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
+     - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
        ```bash
        echo 'export GEMINI_API_KEY="YOUR_GEMINI_API_KEY"' >> ~/.bashrc
        source ~/.bashrc
@@ -52,7 +52,7 @@ Gemini CLI 需要您通过 Google 的 AI 服务进行身份验证。在初始启
          export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION" # 例如，us-central1
          export GOOGLE_GENAI_USE_VERTEXAI=true
          ```
-       - 为了重复使用，您可以将环境变量添加到您的 `.env` 文件（位于项目目录或用户主目录）或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
+       - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
          ```bash
          echo 'export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"' >> ~/.bashrc
          echo 'export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"' >> ~/.bashrc
@@ -66,9 +66,43 @@ Gemini CLI 需要您通过 Google 的 AI 服务进行身份验证。在初始启
          export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"
          export GOOGLE_GENAI_USE_VERTEXAI=true
          ```
-       - 为了重复使用，您可以将环境变量添加到您的 `.env` 文件（位于项目目录或用户主目录）或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
+       - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
          ```bash
          echo 'export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"' >> ~/.bashrc
          echo 'export GOOGLE_GENAI_USE_VERTEXAI=true' >> ~/.bashrc
          source ~/.bashrc
          ```
+
+### 使用 `.env` 文件持久化环境变量
+
+您可以在项目目录或主目录中创建 **`.gemini/.env`** 文件。创建普通的 **`.env`** 文件也可以工作，但推荐使用 `.gemini/.env` 以将 Gemini 变量与其他工具隔离。
+
+Gemini CLI 会自动从找到的**第一个** `.env` 文件加载环境变量，使用以下搜索顺序：
+
+1. 从**当前目录**开始向上移动至 `/`，对于每个目录检查：
+   1. `.gemini/.env`
+   2. `.env`
+2. 如果没有找到文件，它会回退到您的**主目录**：
+   - `~/.gemini/.env`
+   - `~/.env`
+
+> **重要提示：** 搜索在遇到**第一个**文件时停止——变量**不会**跨多个文件合并。
+
+#### 示例
+
+**项目特定覆盖**（当您在项目内时优先使用）：
+
+```bash
+mkdir -p .gemini
+echo 'GOOGLE_CLOUD_PROJECT="your-project-id"' >> .gemini/.env
+```
+
+**用户全局设置**（在每个目录中都可用）：
+
+```bash
+mkdir -p ~/.gemini
+cat >> ~/.gemini/.env <<'EOF'
+GOOGLE_CLOUD_PROJECT="your-project-id"
+GEMINI_API_KEY="your-gemini-api-key"
+EOF
+```
