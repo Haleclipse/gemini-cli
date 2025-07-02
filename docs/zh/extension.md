@@ -28,7 +28,8 @@ Gemini CLI 从这两个位置加载所有扩展。如果同名扩展在两个位
       "command": "node my-server.js"
     }
   },
-  "contextFileName": "GEMINI.md"
+  "contextFileName": "GEMINI.md",
+  "excludeTools": ["run_shell_command"]
 }
 ```
 
@@ -36,5 +37,6 @@ Gemini CLI 从这两个位置加载所有扩展。如果同名扩展在两个位
 - `version`：扩展的版本。
 - `mcpServers`：要配置的 MCP 服务器映射。键是服务器的名称，值是服务器配置。这些服务器将在启动时加载，就像在 [`settings.json` 文件](./cli/configuration.md) 中配置的 MCP 服务器一样。如果扩展和 `settings.json` 文件都配置了同名的 MCP 服务器，`settings.json` 文件中定义的服务器优先。
 - `contextFileName`：包含扩展上下文的文件名称。这将用于从工作区加载上下文。如果不使用此属性但扩展目录中存在 `GEMINI.md` 文件，则将加载该文件。
+- `excludeTools`：要从模型中排除的工具名称数组。您还可以为支持的工具指定特定命令的限制，例如 `run_shell_command` 工具。例如，`"excludeTools": ["run_shell_command(rm -rf)"]` 将阻止 `rm -rf` 命令。
 
 当 Gemini CLI 启动时，它会加载所有扩展并合并它们的配置。如果存在任何冲突，工作区配置优先。

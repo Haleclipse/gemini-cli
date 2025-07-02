@@ -78,7 +78,8 @@ export default defineConfig({
                 { text: '遥测', link: '/zh/telemetry' },
                 { text: '集成测试', link: '/zh/integration-tests' },
                 { text: '故障排除', link: '/zh/troubleshooting' },
-                { text: '服务条款与隐私', link: '/zh/tos-privacy' }
+                { text: '服务条款与隐私', link: '/zh/tos-privacy' },
+                { text: '配额和定价', link: '/zh/quota-and-pricing' }
               ]
             }
           ]
@@ -157,7 +158,8 @@ export default defineConfig({
                 { text: 'Telemetry', link: '/telemetry' },
                 { text: 'Integration Tests', link: '/integration-tests' },
                 { text: 'Troubleshooting', link: '/troubleshooting' },
-                { text: 'Terms of Service & Privacy', link: '/tos-privacy' }
+                { text: 'Terms of Service & Privacy', link: '/tos-privacy' },
+                { text: 'Quotas and Pricing', link: '/quota-and-pricing' }
               ]
             }
           ]

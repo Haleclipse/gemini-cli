@@ -2,6 +2,11 @@
 
 ## Update History
 
+### 2025-07-02 Update
+- **Commit Range**: 58b14b7c..cd069fd4
+- **New Commits**: 13
+- **Version**: v0.1.7 → v0.1.9
+
 ### 2025-07-01 Update
 - **Commit Range**: 5c4c833d..58b14b7c
 - **New Commits**: 17
@@ -31,7 +36,34 @@
 - **Commit Range**: 05b9b9ab..c55b15f7
 - **Total Commits**: 30
 
-## Latest Changes（2025-07-01）
+## Latest Changes（2025-07-02）
+
+### 🎉 版本发布 v0.1.9
+
+#### 重大功能Update
+- **[#2556](https://github.com/google-gemini/gemini-cli/pull/2556)** - 🎵 **多媒体支持**: 为 read_file 添加音频和视频支持
+- **[#2793](https://github.com/google-gemini/gemini-cli/pull/2793)** - 🔄 **无限循环保护**: 为客户端添加无限循环保护机制
+- **[#2886](https://github.com/google-gemini/gemini-cli/pull/2886)** - 🆔 **会话支持**: 在 API 调用中添加 session_id 支持
+- **[#2853](https://github.com/google-gemini/gemini-cli/pull/2853)** - 🛠️ **扩展增强**: 为扩展添加 excludedTools 功能
+
+#### 用户体验改进
+- **[#2904](https://github.com/google-gemini/gemini-cli/pull/2904)** - 🏷️ `/chat` 命令现在需要必填标签
+- **[#2776](https://github.com/google-gemini/gemini-cli/pull/2776)** - 💬 改进斜杠命令自动完成逻辑
+- **[#2898](https://github.com/google-gemini/gemini-cli/pull/2898)** - 🗜️ 降低历史记录压缩的阈值
+
+#### Bug Fixes
+- **[#2504](https://github.com/google-gemini/gemini-cli/pull/2504)** - 🐛 修复文本缓冲区中字符丢失的问题
+- **[#2902](https://github.com/google-gemini/gemini-cli/pull/2902)** - 📝 为 TypeScript 文件特殊处理 MIME 类型
+
+#### Documentation
+- **[#2894](https://github.com/google-gemini/gemini-cli/pull/2894)** - 📖 **新文档**: 添加详细说明配额和成本信息的页面
+- **[#2729](https://github.com/google-gemini/gemini-cli/pull/2729)** - 📝 Update README.md
+
+#### 其他改进
+- **[#2906](https://github.com/google-gemini/gemini-cli/pull/2906)** - 📦 升级版本到 0.1.9
+- **[#2860](https://github.com/google-gemini/gemini-cli/pull/2860)** - 🔧 在 gemini.tsx 中使用常量占位符替代 ".gemini/settings.json"
+
+## 之前的更改（2025-07-01）
 
 ### New Features和改进
 - **[#2855](https://github.com/google-gemini/gemini-cli/pull/2855)** - 🎯 添加每周社区报告工作流
