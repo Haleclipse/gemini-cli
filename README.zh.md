@@ -37,9 +37,9 @@
 
 现在您已准备好使用 Gemini CLI！
 
-### 高级使用或提高限制：
+### 使用 Gemini API 密钥：
 
-如果您需要使用特定模型或需要更高的请求容量，可以使用 API 密钥：
+Gemini API 提供免费额度，每天有 [100 个请求](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) 使用 Gemini 2.5 Pro，可以控制使用的模型，并可访问更高的速率限制（付费计划）：
 
 1. 从 [Google AI Studio](https://aistudio.google.com/apikey) 生成密钥。
 2. 在终端中将其设置为环境变量。将 `YOUR_API_KEY` 替换为您生成的密钥。
