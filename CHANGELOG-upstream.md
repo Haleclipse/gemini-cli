@@ -7,28 +7,11 @@
 ### 2025-07-04 更新
 - **提交范围**: 85a1d814..ef736f0d
 - **新增提交数**: 11
-- **主要更改**:
-  - 新增夜间发布标签格式化 (#3204)
-  - 修复夜间发布标签 (#3202)
-  - 添加发布自动化流程和GitHub Actions (#2852)
-  - 重构文本缓冲区使用reducer模式 (#2652)
-  - 为核心工具方法添加和改进JSDoc注释 (#3128)
-  - 修复Google用户ID传递给Clearcut (#3147)
-  - 修复客户端在flashFallbackHandler中获取模型配置 (#2118)
-  - 显示Ctrl+S快捷键展开调试控制台 (#2491)
-  - 修复ANSI主题蓝色显示 (#3100)
-  - 移除不必要的空白字符 (#2781)
-  - 修复CONTRIBUTING.md中的拼写错误 (#2722)
 - **版本**: v0.1.9
 
 ### 2025-07-03 更新
 - **提交范围**: 08ce78a1..85a1d814
 - **新增提交数**: 5
-- **主要更改**:
-  - 新增自动化PR分类工作流 (#3082, #3062)
-  - 修复README中的拼写错误 (#3061)
-  - 更新通知模板 (#3035)
-  - 添加Shift+Tab快捷键提示 (#2892)
 - **版本**: v0.1.9
 
 ### 2025-07-02 更新
@@ -65,9 +48,28 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-07-02）
+## 最新更改（2025-07-04）
 
-### 🎉 版本发布 v0.1.9
+### 🚀 发布自动化和技术改进
+- **[#3204](https://github.com/google-gemini/gemini-cli/pull/3204)** - 📦 新增夜间发布标签格式化
+- **[#3202](https://github.com/google-gemini/gemini-cli/pull/3202)** - 🔧 修复夜间发布标签
+- **[#2852](https://github.com/google-gemini/gemini-cli/pull/2852)** - 🚀 添加发布自动化流程和GitHub Actions
+- **[#2652](https://github.com/google-gemini/gemini-cli/pull/2652)** - 🧮 重构文本缓冲区使用reducer模式
+- **[#3128](https://github.com/google-gemini/gemini-cli/pull/3128)** - 📝 为核心工具方法添加和改进JSDoc注释
+- **[#3147](https://github.com/google-gemini/gemini-cli/pull/3147)** - 🆔 修复Google用户ID传递给Clearcut
+- **[#2118](https://github.com/google-gemini/gemini-cli/pull/2118)** - ⚙️ 修复客户端在flashFallbackHandler中获取模型配置
+- **[#2491](https://github.com/google-gemini/gemini-cli/pull/2491)** - 🎯 显示Ctrl+S快捷键展开调试控制台
+- **[#3100](https://github.com/google-gemini/gemini-cli/pull/3100)** - 🎨 修复ANSI主题蓝色显示
+- **[#2781](https://github.com/google-gemini/gemini-cli/pull/2781)** - 🧹 移除不必要的空白字符
+- **[#2722](https://github.com/google-gemini/gemini-cli/pull/2722)** - 📝 修复CONTRIBUTING.md中的拼写错误
+
+### 🎯 UI和工作流改进（2025-07-03）
+- **[#3082](https://github.com/google-gemini/gemini-cli/pull/3082)**, **[#3062](https://github.com/google-gemini/gemini-cli/pull/3062)** - 🔄 新增自动化PR分类工作流
+- **[#3061](https://github.com/google-gemini/gemini-cli/pull/3061)** - 📝 修复README中的拼写错误
+- **[#3035](https://github.com/google-gemini/gemini-cli/pull/3035)** - 🔔 更新通知模板
+- **[#2892](https://github.com/google-gemini/gemini-cli/pull/2892)** - ⌨️ 添加Shift+Tab快捷键提示
+
+### 🎉 版本发布 v0.1.9（2025-07-02）
 
 #### 重大功能更新
 - **[#2556](https://github.com/google-gemini/gemini-cli/pull/2556)** - 🎵 **多媒体支持**: 为 read_file 添加音频和视频支持
