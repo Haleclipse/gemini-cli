@@ -2,6 +2,23 @@
 
 ## Update History
 
+### 2025-07-04 Update
+- **Commit Range**: 85a1d814..ef736f0d
+- **New Commits**: 11
+- **主要更改**:
+  - 新增夜间发布标签格式化 (#3204)
+  - 修复夜间发布标签 (#3202)
+  - 添加发布自动化流程和GitHub Actions (#2852)
+  - 重构文本缓冲区使用reducer模式 (#2652)
+  - 为核心工具方法添加和改进JSDoc注释 (#3128)
+  - 修复Google用户ID传递给Clearcut (#3147)
+  - 修复客户端在flashFallbackHandler中获取模型配置 (#2118)
+  - 显示Ctrl+S快捷键展开调试控制台 (#2491)
+  - 修复ANSI主题蓝色显示 (#3100)
+  - 移除不必要的空白字符 (#2781)
+  - 修复CONTRIBUTING.md中的拼写错误 (#2722)
+- **Version**: v0.1.9
+
 ### 2025-07-03 Update
 - **Commit Range**: 08ce78a1..85a1d814
 - **New Commits**: 5
@@ -10,7 +27,7 @@
   - 修复README中的拼写错误 (#3061)
   - Update通知模板 (#3035)
   - 添加Shift+Tab快捷键提示 (#2892)
-- **Version**: 保持 v0.1.9（npm已发布v0.1.10）
+- **Version**: v0.1.9
 
 ### 2025-07-02 Update
 - **Commit Range**: 58b14b7c..cd069fd4
@@ -20,22 +37,22 @@
 ### 2025-07-01 Update
 - **Commit Range**: 5c4c833d..58b14b7c
 - **New Commits**: 17
-- **Version**: 仍为 v0.1.7（代码Update但未发布新版本）
+- **Version**: v0.1.7
 
 ### 2025-06-30 Update
 - **Commit Range**: 4e8a6400..5c4c833d
 - **New Commits**: 22
-- **Version**: 仍为 v0.1.7（代码Update但未发布新版本）
+- **Version**: v0.1.7
 
 ### 2025-06-29 Update
 - **Commit Range**: ad7839ea..fc21d1ca
 - **New Commits**: 15
-- **Version**: 仍为 v0.1.7（代码Update但未发布新版本）
+- **Version**: v0.1.7
 
 ### 2025-06-28 Update
 - **Commit Range**: 6742a1b7..ad7839ea
 - **New Commits**: 19
-- **Version**: 0.1.5 → 0.1.8
+- **Version**: v0.1.5 → v0.1.7
 
 ### 2025-06-27 Update
 - **Commit Range**: c55b15f7..6742a1b7
