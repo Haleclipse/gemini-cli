@@ -2,31 +2,19 @@
 
 ## Update History
 
+### 2025-07-05 Update
+- **Commit Range**: ef736f0d..8adc5869
+- **New Commits**: 11
+- **Version**: v0.1.9
+
 ### 2025-07-04 Update
 - **Commit Range**: 85a1d814..ef736f0d
 - **New Commits**: 11
-- **主要更改**:
-  - 新增夜间发布标签格式化 (#3204)
-  - 修复夜间发布标签 (#3202)
-  - 添加发布自动化流程和GitHub Actions (#2852)
-  - 重构文本缓冲区使用reducer模式 (#2652)
-  - 为核心工具方法添加和改进JSDoc注释 (#3128)
-  - 修复Google用户ID传递给Clearcut (#3147)
-  - 修复客户端在flashFallbackHandler中获取模型配置 (#2118)
-  - 显示Ctrl+S快捷键展开调试控制台 (#2491)
-  - 修复ANSI主题蓝色显示 (#3100)
-  - 移除不必要的空白字符 (#2781)
-  - 修复CONTRIBUTING.md中的拼写错误 (#2722)
 - **Version**: v0.1.9
 
 ### 2025-07-03 Update
 - **Commit Range**: 08ce78a1..85a1d814
 - **New Commits**: 5
-- **主要更改**:
-  - 新增自动化PR分类工作流 (#3082, #3062)
-  - 修复README中的拼写错误 (#3061)
-  - Update通知模板 (#3035)
-  - 添加Shift+Tab快捷键提示 (#2892)
 - **Version**: v0.1.9
 
 ### 2025-07-02 Update
@@ -63,9 +51,41 @@
 - **Commit Range**: 05b9b9ab..c55b15f7
 - **Total Commits**: 30
 
-## Latest Changes（2025-07-02）
+## Latest Changes（2025-07-05）
 
-### 🎉 版本发布 v0.1.9
+### 🚀 Node.js 20 升级和发布改进
+- **[#3277](https://github.com/google-gemini/gemini-cli/pull/3277)** - 📦 **重要**: Update最低 Node.js 版本要求到 20
+- **[#3247](https://github.com/google-gemini/gemini-cli/pull/3247)** - 📝 Update README 要求 Node.js 20+
+- **[#3264](https://github.com/google-gemini/gemini-cli/pull/3264)** - 🔏 签名夜间发布提交
+- **[#3254](https://github.com/google-gemini/gemini-cli/pull/3254)** - 🔏 签名标签
+- **[#3206](https://github.com/google-gemini/gemini-cli/pull/3206)** - 📦 夜间发布标签格式化
+- **[#3285](https://github.com/google-gemini/gemini-cli/pull/3285)** - 🔧 添加 nohup 支持
+- **[#3183](https://github.com/google-gemini/gemini-cli/pull/3183)** - 📝 修复小拼写错误
+- **[#3284](https://github.com/google-gemini/gemini-cli/pull/3284)** - 📝 修复多个文件中的拼写错误
+- **[#3203](https://github.com/google-gemini/gemini-cli/pull/3203)** - 📝 修复拼写错误
+- **[#2862](https://github.com/google-gemini/gemini-cli/pull/2862)** - 📝 修复 deployment.md 中的命令使用问题
+- **[#3167](https://github.com/google-gemini/gemini-cli/pull/3167)** - 🔧 Update问题模板使用 GitHub alert
+
+### 🚀 发布自动化和技术改进（2025-07-04）
+- **[#3204](https://github.com/google-gemini/gemini-cli/pull/3204)** - 📦 新增夜间发布标签格式化
+- **[#3202](https://github.com/google-gemini/gemini-cli/pull/3202)** - 🔧 修复夜间发布标签
+- **[#2852](https://github.com/google-gemini/gemini-cli/pull/2852)** - 🚀 添加发布自动化流程和GitHub Actions
+- **[#2652](https://github.com/google-gemini/gemini-cli/pull/2652)** - 🧮 重构文本缓冲区使用reducer模式
+- **[#3128](https://github.com/google-gemini/gemini-cli/pull/3128)** - 📝 为核心工具方法添加和改进JSDoc注释
+- **[#3147](https://github.com/google-gemini/gemini-cli/pull/3147)** - 🆔 修复Google用户ID传递给Clearcut
+- **[#2118](https://github.com/google-gemini/gemini-cli/pull/2118)** - ⚙️ 修复客户端在flashFallbackHandler中获取模型配置
+- **[#2491](https://github.com/google-gemini/gemini-cli/pull/2491)** - 🎯 显示Ctrl+S快捷键展开调试控制台
+- **[#3100](https://github.com/google-gemini/gemini-cli/pull/3100)** - 🎨 修复ANSI主题蓝色显示
+- **[#2781](https://github.com/google-gemini/gemini-cli/pull/2781)** - 🧹 移除不必要的空白字符
+- **[#2722](https://github.com/google-gemini/gemini-cli/pull/2722)** - 📝 修复CONTRIBUTING.md中的拼写错误
+
+### 🎯 UI和工作流改进（2025-07-03）
+- **[#3082](https://github.com/google-gemini/gemini-cli/pull/3082)**, **[#3062](https://github.com/google-gemini/gemini-cli/pull/3062)** - 🔄 新增自动化PR分类工作流
+- **[#3061](https://github.com/google-gemini/gemini-cli/pull/3061)** - 📝 修复README中的拼写错误
+- **[#3035](https://github.com/google-gemini/gemini-cli/pull/3035)** - 🔔 Update通知模板
+- **[#2892](https://github.com/google-gemini/gemini-cli/pull/2892)** - ⌨️ 添加Shift+Tab快捷键提示
+
+### 🎉 版本发布 v0.1.9（2025-07-02）
 
 #### 重大功能Update
 - **[#2556](https://github.com/google-gemini/gemini-cli/pull/2556)** - 🎵 **多媒体支持**: 为 read_file 添加音频和视频支持

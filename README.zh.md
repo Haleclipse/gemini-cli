@@ -18,7 +18,7 @@
 
 ## 快速开始
 
-1. **前置条件：** 确保您已安装 [Node.js 18](https://nodejs.org/en/download) 或更高版本。
+1. **前置条件：** 确保您已安装 [Node.js 20](https://nodejs.org/en/download) 或更高版本。
 2. **运行 CLI：** 在终端中执行以下命令：
 
    ```bash
