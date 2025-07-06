@@ -4,6 +4,11 @@
 
 ## 更新历史
 
+### 2025-07-06 更新
+- **提交范围**: 8adc5869..39d4095a
+- **新增提交数**: 9
+- **版本**: v0.1.9
+
 ### 2025-07-05 更新
 - **提交范围**: ef736f0d..8adc5869
 - **新增提交数**: 11
@@ -53,9 +58,20 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-07-05）
+## 最新更改（2025-07-06）
 
-### 🚀 Node.js 20 升级和发布改进
+### 🎯 新功能和重要修复
+- **[#3367](https://github.com/google-gemini/gemini-cli/pull/3367)** - 🚀 **YOLO模式**: 在 /help 中显示 YOLO 模式快捷键
+- **[#3056](https://github.com/google-gemini/gemini-cli/pull/3056)** - ⚠️ 添加用户启动警告和主目录检查
+- **[#3339](https://github.com/google-gemini/gemini-cli/pull/3339)** - 📦 更新 @google/genai 到 1.8.0
+- **[#2883](https://github.com/google-gemini/gemini-cli/pull/2883)** - 🔧 处理工具调度器中的内联内容修改
+- **[#2932](https://github.com/google-gemini/gemini-cli/pull/2932)** - 🐛 修复 #2922: 防止在 shell 模式中 @ 连接到有效路径
+- **[#3300](https://github.com/google-gemini/gemini-cli/pull/3300)** - 🔧 清理工具参数以修复 400 API 错误
+- **[#3335](https://github.com/google-gemini/gemini-cli/pull/3335)** - 🧹 清理发布提示
+- **[#3321](https://github.com/google-gemini/gemini-cli/pull/3321)** - 📦 发布：清理和精简
+- **[#3333](https://github.com/google-gemini/gemini-cli/pull/3333)** - 🐛 分组取消的工具调用响应以防止 API 错误
+
+### 🚀 Node.js 20 升级和发布改进（2025-07-05）
 - **[#3277](https://github.com/google-gemini/gemini-cli/pull/3277)** - 📦 **重要**: 更新最低 Node.js 版本要求到 20
 - **[#3247](https://github.com/google-gemini/gemini-cli/pull/3247)** - 📝 更新 README 要求 Node.js 20+
 - **[#3264](https://github.com/google-gemini/gemini-cli/pull/3264)** - 🔏 签名夜间发布提交
