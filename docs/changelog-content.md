@@ -2,6 +2,11 @@
 
 ## Update History
 
+### 2025-07-07 Update
+- **Commit Range**: 39d4095a..a4097ae6
+- **New Commits**: 22
+- **Version**: v0.1.9
+
 ### 2025-07-06 Update
 - **Commit Range**: 8adc5869..39d4095a
 - **New Commits**: 9
@@ -56,9 +61,31 @@
 - **Commit Range**: 05b9b9ab..c55b15f7
 - **Total Commits**: 30
 
-## Latest Changes（2025-07-06）
+## Latest Changes（2025-07-07）
 
-### 🎯 New Features和重要修复
+### 🔧 MCP 改进和认证增强
+- **[#3489](https://github.com/google-gemini/gemini-cli/pull/3489)** - 📦 发布和打包清理
+- **[#3070](https://github.com/google-gemini/gemini-cli/pull/3070)** - 🔐 **Cloud Shell 支持**: 让 Gemini CLI 在 Cloud Shell 中重用用户认证
+- **[#3060](https://github.com/google-gemini/gemini-cli/pull/3060)** - 📝 Update README 显示 Vertex 的 API 密钥使用
+- **[#3483](https://github.com/google-gemini/gemini-cli/pull/3483)** - 🚀 在启动时初始化 MCP 工具，而非每次认证时
+- **[#3469](https://github.com/google-gemini/gemini-cli/pull/3469)** - 🔧 重命名 allowed_mcp_server_names 为 allowed-mcp-server-names
+- **[#3464](https://github.com/google-gemini/gemini-cli/pull/3464)** - 🔧 添加 --allowed_mcp_server_names 标志
+- **[#2976](https://github.com/google-gemini/gemini-cli/pull/2976)** - 🔧 为 mcpServers 配置添加 excludeTools 和 includeTools
+- **[#3175](https://github.com/google-gemini/gemini-cli/pull/3175)** - 💫 **斜杠命令重构**: 重构斜杠命令 + 未来愿景
+
+### 🐛 修复和改进
+- **[#3493](https://github.com/google-gemini/gemini-cli/pull/3493)** - 🐛 修复认证对话框中的双 "esc" 错误
+- **[#3491](https://github.com/google-gemini/gemini-cli/pull/3491)** - 📝 修复拼写错误并添加认证验证测试
+- **[#2919](https://github.com/google-gemini/gemini-cli/pull/2919)** - 🔧 防止 Tab 自动执行不完整的斜杠命令
+- **[#3043](https://github.com/google-gemini/gemini-cli/pull/3043)** - 🐛 修复 EditTool 可能覆盖同一文件的人工编辑
+- **[#3360](https://github.com/google-gemini/gemini-cli/pull/3360)** - 🔧 重新启用 shell 工具中的反引号使用
+- **[#3229](https://github.com/google-gemini/gemini-cli/pull/3229)** - 🎨 添加 .svg 支持
+- **[#3387](https://github.com/google-gemini/gemini-cli/pull/3387)** - 🐛 @file 不遵守 config respectGitIgnore=false
+- **[#3362](https://github.com/google-gemini/gemini-cli/pull/3362)** - 🐛 修复表格标题和行的嵌套 markdown 渲染
+- **[#3416](https://github.com/google-gemini/gemini-cli/pull/3416)** - 🔧 在 settings.json 变量替换中遵守 .env 的环境变量
+- **[#3349](https://github.com/google-gemini/gemini-cli/pull/3349)** - 📝 改进 isCommandAllowed 中的错误消息
+
+### 🎯 New Features和重要修复（2025-07-06）
 - **[#3367](https://github.com/google-gemini/gemini-cli/pull/3367)** - 🚀 **YOLO模式**: 在 /help 中显示 YOLO 模式快捷键
 - **[#3056](https://github.com/google-gemini/gemini-cli/pull/3056)** - ⚠️ 添加用户启动警告和主目录检查
 - **[#3339](https://github.com/google-gemini/gemini-cli/pull/3339)** - 📦 Update @google/genai 到 1.8.0

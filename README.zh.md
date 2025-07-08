@@ -48,6 +48,22 @@ Gemini API 提供免费额度，每天有 [100 个请求](https://ai.google.dev/
    export GEMINI_API_KEY="YOUR_API_KEY"
    ```
 
+3. （可选）在 API 密钥页面将您的 Gemini API 项目升级到付费计划（将自动解锁 [Tier 1 速率限制](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1)）
+
+### 使用 Vertex AI API 密钥：
+
+Vertex AI 提供使用 express 模式的 [免费额度](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) 用于 Gemini 2.5 Pro，可以控制使用的模型，并通过付费账户访问更高的速率限制：
+
+1. 从 [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/docs/start/api-keys) 生成密钥。
+2. 在终端中将其设置为环境变量。将 `YOUR_API_KEY` 替换为您生成的密钥，并将 GOOGLE_GENAI_USE_VERTEXAI 设置为 true
+
+   ```bash
+   export GOOGLE_API_KEY="YOUR_API_KEY"
+   export GOOGLE_GENAI_USE_VERTEXAI=true
+   ```
+
+3. （可选）在您的项目上添加计费账户以获得[更高的使用限制](https://cloud.google.com/vertex-ai/generative-ai/docs/quotas)
+
 有关其他身份验证方法（包括 Google Workspace 账户），请参阅[身份验证](./docs/cli/authentication.md)指南。
 
 ## 示例
@@ -128,6 +144,10 @@ gemini
 ```text
 > 按支出月份整理我的 PDF 发票。
 ```
+
+### 卸载
+
+请前往[卸载](docs/Uninstall.md)指南了解卸载说明。
 
 ## 服务条款与隐私声明
 
