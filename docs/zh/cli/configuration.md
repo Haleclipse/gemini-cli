@@ -69,15 +69,16 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有两�
 
 - **`coreTools`**（字符串数组）：
 
-  - **描述：** 允许您指定应该对模型可用的核心工具名称列表。这可以用来限制内置工具集。有关核心工具列表，请参阅[内置工具](../core/tools-api.md#built-in-tools)。
+  - **描述：** 允许您指定应该对模型可用的核心工具名称列表。这可以用来限制内置工具集。有关核心工具列表，请参阅[内置工具](../core/tools-api.md#built-in-tools)。您还可以为支持的工具指定命令特定的限制，例如 `ShellTool`。例如，`"coreTools": ["ShellTool(ls -l)"]` 只允许执行 `ls -l` 命令。
   - **默认值：** 所有工具都可供 Gemini 模型使用。
-  - **示例：** `"coreTools": ["ReadFileTool", "GlobTool", "SearchText"]`。
+  - **示例：** `"coreTools": ["ReadFileTool", "GlobTool", "ShellTool(ls)"]`。
 
 - **`excludeTools`**（字符串数组）：
 
-  - **描述：** 允许您指定应该从模型中排除的核心工具名称列表。同时列在 `excludeTools` 和 `coreTools` 中的工具将被排除。
+  - **描述：** 允许您指定应该从模型中排除的核心工具名称列表。同时列在 `excludeTools` 和 `coreTools` 中的工具将被排除。您还可以为支持的工具指定命令特定的限制，例如 `ShellTool`。例如，`"excludeTools": ["ShellTool(rm -rf)"]` 将阻止 `rm -rf` 命令。
   - **默认值**：不排除任何工具。
   - **示例：** `"excludeTools": ["run_shell_command", "findFiles"]`。
+  - **安全注意事项：** 对于 `run_shell_command` 在 `excludeTools` 中的命令特定限制基于简单的字符串匹配，可以轻易绕过。此功能**不是安全机制**，不应依赖它来安全地执行不受信任的代码。建议使用 `coreTools` 明确选择可以执行的命令。
 
 - **`autoAccept`**（布尔值）：
 
@@ -186,6 +187,15 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有两�
     "usageStatisticsEnabled": false
     ```
 
+- **`hideTips`**（布尔值）：
+  - **描述：** 启用或禁用 CLI 界面中的有用提示。
+  - **默认值：** `false`
+  - **示例：**
+
+    ```json
+    "hideTips": true
+    ```
+
 ### 示例 `settings.json`：
 
 ```json
@@ -209,7 +219,8 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有两�
     "otlpEndpoint": "http://localhost:4317",
     "logPrompts": true
   },
-  "usageStatisticsEnabled": true
+  "usageStatisticsEnabled": true,
+  "hideTips": false
 }
 ```
 
@@ -242,12 +253,13 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
 - **`GOOGLE_API_KEY`**：
   - 您的 Google Cloud API 密钥。
   - 在快速模式下使用 Vertex AI 所需。
-  - 确保您具有必要的权限并设置 `GOOGLE_GENAI_USE_VERTEXAI=true` 环境变量。
+  - 确保您具有必要的权限。
   - 示例：`export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"`。
 - **`GOOGLE_CLOUD_PROJECT`**：
   - 您的 Google Cloud 项目 ID。
   - 使用 Code Assist 或 Vertex AI 所需。
-  - 如果使用 Vertex AI，确保您具有必要的权限并设置 `GOOGLE_GENAI_USE_VERTEXAI=true` 环境变量。
+  - 如果使用 Vertex AI，确保您在此项目中具有必要的权限。
+  - **Cloud Shell 注意事项：**在 Cloud Shell 环境中运行时，此变量默认为为 Cloud Shell 用户分配的特殊项目。如果您在 Cloud Shell 的全局环境中设置了 `GOOGLE_CLOUD_PROJECT`，它将被此默认值覆盖。要在 Cloud Shell 中使用不同的项目，您必须在 `.env` 文件中定义 `GOOGLE_CLOUD_PROJECT`。
   - 示例：`export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"`。
 - **`GOOGLE_APPLICATION_CREDENTIALS`**（字符串）：
   - **描述：** 您的 Google 应用程序凭据 JSON 文件的路径。
@@ -258,7 +270,6 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
 - **`GOOGLE_CLOUD_LOCATION`**：
   - 您的 Google Cloud 项目位置（例如，us-central1）。
   - 在非快速模式下使用 Vertex AI 所需。
-  - 如果使用 Vertex AI，确保您具有必要的权限并设置 `GOOGLE_GENAI_USE_VERTEXAI=true` 环境变量。
   - 示例：`export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"`。
 - **`GEMINI_SANDBOX`**：
   - `settings.json` 中 `sandbox` 设置的替代方案。
@@ -291,13 +302,13 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
   - 为此会话启用沙盒模式。
 - **`--sandbox-image`**：
   - 设置沙盒镜像 URI。
-- **`--debug_mode`**（**`-d`**）：
+- **`--debug`**（**`-d`**）：
   - 为此会话启用调试模式，提供更详细的输出。
-- **`--all_files`**（**`-a`**）：
+- **`--all-files`**（**`-a`**）：
   - 如果设置，递归地将当前目录内的所有文件作为提示的上下文包含。
 - **`--help`**（或 **`-h`**）：
   - 显示关于命令行参数的帮助信息。
-- **`--show_memory_usage`**：
+- **`--show-memory-usage`**：
   - 显示当前内存使用情况。
 - **`--yolo`**：
   - 启用 YOLO 模式，自动批准所有工具调用。
@@ -311,6 +322,12 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
   - 启用遥测的提示记录。有关更多信息，请参阅[遥测](../telemetry.md)。
 - **`--checkpointing`**：
   - 启用[检查点](./commands.md#checkpointing-commands)。
+- **`--extensions <extension_name ...>`**（**`-e <extension_name ...>`**）：
+  - 指定会话要使用的扩展列表。如果未提供，则使用所有可用的扩展。
+  - 使用特殊术语 `gemini -e none` 禁用所有扩展。
+  - 示例：`gemini -e my-extension -e my-other-extension`
+- **`--list-extensions`**（**`-l`**）：
+  - 列出所有可用的扩展并退出。
 - **`--version`**：
   - 显示 CLI 的版本。
 

@@ -2,6 +2,11 @@
 
 ## Update History
 
+### 2025-07-08 Update
+- **Commit Range**: a4097ae6..9273e8dd
+- **New Commits**: 17
+- **Version**: v0.1.9
+
 ### 2025-07-07 Update
 - **Commit Range**: 39d4095a..a4097ae6
 - **New Commits**: 22
@@ -61,9 +66,34 @@
 - **Commit Range**: 05b9b9ab..c55b15f7
 - **Total Commits**: 30
 
-## Latest Changes（2025-07-07）
+## Latest Changes（2025-07-08）
 
-### 🔧 MCP 改进和认证增强
+### 🔧 依赖管理和质量提升
+- **[#3557](https://github.com/google-gemini/gemini-cli/pull/3557)** - 🔧 修复 shell-quote 版本
+- **[#2972](https://github.com/google-gemini/gemini-cli/pull/2972)** - 🤖 添加 Dependabot 配置
+- **[#2992](https://github.com/google-gemini/gemini-cli/pull/2992)** - 🔐 添加 CodeQL 分析
+- **[#3511](https://github.com/google-gemini/gemini-cli/pull/3511)** - 🐛 修复夜间发布
+- **[#3500](https://github.com/google-gemini/gemini-cli/pull/3500)** - 📝 添加通用使用信息到 --help 消息
+- **[#3093](https://github.com/google-gemini/gemini-cli/pull/3093)** - 🚀 在分叉仓库中禁用计划任务
+
+### 🔧 CLI 改进和标准化
+- **[#3541](https://github.com/google-gemini/gemini-cli/pull/3541)** - 🔧 **标志标准化**: 统一所有标志使用连字符（弃用下划线标志）
+- **[#3191](https://github.com/google-gemini/gemini-cli/pull/3191)** - 🔧 添加命令行选项以启用和列出扩展
+- **[#3560](https://github.com/google-gemini/gemini-cli/pull/3560)** - 🔧 遵守 DEBUG 和 CLI_TITLE 环境变量
+- **[#3545](https://github.com/google-gemini/gemini-cli/pull/3545)** - 🐛 不强制前导斜杠，因为这在 Windows 上不成立
+- **[#3506](https://github.com/google-gemini/gemini-cli/pull/3506)** - 🐛 修复 Windows 上 start.js 的无限循环
+
+### 🔐 认证和验证改进
+- **[#3235](https://github.com/google-gemini/gemini-cli/pull/3235)** - 🔐 **认证修复**: 不盲目默认使用 API 密钥认证
+- **[#3568](https://github.com/google-gemini/gemini-cli/pull/3568)** - 🐛 修复模型检查中的错误请求
+- **[#1381](https://github.com/google-gemini/gemini-cli/pull/1381)** - 🔧 改进认证环境变量验证逻辑和消息
+- **[#2881](https://github.com/google-gemini/gemini-cli/pull/2881)** - 🔧 改进函数调用参数验证和类型定义
+
+### 🎯 性能和体验优化
+- **[#3049](https://github.com/google-gemini/gemini-cli/pull/3049)** - 🗜️ 压缩时保留最近历史记录
+- **[#2707](https://github.com/google-gemini/gemini-cli/pull/2707)** - 🎨 将执行时间格式化为分钟、秒
+
+### 🔧 MCP 改进和认证增强（2025-07-07）
 - **[#3489](https://github.com/google-gemini/gemini-cli/pull/3489)** - 📦 发布和打包清理
 - **[#3070](https://github.com/google-gemini/gemini-cli/pull/3070)** - 🔐 **Cloud Shell 支持**: 让 Gemini CLI 在 Cloud Shell 中重用用户认证
 - **[#3060](https://github.com/google-gemini/gemini-cli/pull/3060)** - 📝 Update README 显示 Vertex 的 API 密钥使用
