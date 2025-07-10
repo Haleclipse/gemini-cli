@@ -2,6 +2,23 @@
 
 ## Update History
 
+### 2025-07-09 Update
+- **Commit Range**: 9273e8dd..da50a1ee
+- **New Commits**: 24
+- **Version**: v0.1.9
+- **PR链接**: [#3498](https://github.com/google-gemini/gemini-cli/pull/3498), [#3039](https://github.com/google-gemini/gemini-cli/pull/3039), [#3600](https://github.com/google-gemini/gemini-cli/pull/3600)
+
+#### 主要更改
+- **系统管理**: 新增系统级设置配置支持，允许管理员在企业环境中控制 Gemini CLI 设置
+- **API 增强**: 工具调用和 API 响应中添加 TurnId 以改善错误日志
+- **MCP 服务器**: 使用 yargs 数组类型处理 allowedMcpServerNames 标志
+- **错误处理**: 改进配额和资源相关的 429 错误处理，支持 Code Assist 客户等级
+- **依赖管理**: Update多个依赖包，包括 google-auth-library、dotenv、ws 等
+- **终端优化**: 在 --help 命令中使用完整终端宽度显示
+- **服务条款**: Update服务条款和隐私声明以提高清晰度
+- **调试功能**: 修复 MCP 服务器的调试标志问题
+- **配额管理**: 在 Flash 模型发生 429/配额故障切换时移除自动执行功能
+
 ### 2025-07-08 Update
 - **Commit Range**: a4097ae6..9273e8dd
 - **New Commits**: 17

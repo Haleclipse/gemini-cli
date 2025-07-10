@@ -9,12 +9,13 @@ Gemini CLI 提供多种配置其行为的方式，包括环境变量、命令行
 1. **默认值：** 应用程序内的硬编码默认值。
 2. **用户设置文件：** 当前用户的全局设置。
 3. **项目设置文件：** 项目特定的设置。
-4. **环境变量：** 系统范围或会话特定的变量，可能从 `.env` 文件加载。
-5. **命令行参数：** 启动 CLI 时传递的值。
+4. **系统设置文件：** 系统范围的设置。
+5. **环境变量：** 系统范围或会话特定的变量，可能从 `.env` 文件加载。
+6. **命令行参数：** 启动 CLI 时传递的值。
 
-## 用户设置文件和项目设置文件
+## 设置文件
 
-Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有两个位置：
+Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三个位置：
 
 - **用户设置文件：**
   - **位置：** `~/.gemini/settings.json`（其中 `~` 是您的主目录）。
@@ -22,6 +23,9 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有两�
 - **项目设置文件：**
   - **位置：** 项目根目录内的 `.gemini/settings.json`。
   - **作用域：** 仅在从特定项目运行 Gemini CLI 时适用。项目设置会覆盖用户设置。
+- **系统设置文件：**
+  - **位置：** `/etc/gemini-cli/settings.json`（Linux）、`C:\ProgramData\gemini-cli\settings.json`（Windows）或 `/Library/Application Support/GeminiCli/settings.json`（macOS）。
+  - **作用域：** 适用于系统中所有用户的所有 Gemini CLI 会话。系统设置会覆盖用户和项目设置。对于企业中的系统管理员控制用户的 Gemini CLI 设置可能很有用。
 
 **设置中环境变量的注意事项：** 您的 `settings.json` 文件中的字符串值可以使用 `$VAR_NAME` 或 `${VAR_NAME}` 语法引用环境变量。加载设置时，这些变量将自动解析。例如，如果您有环境变量 `MY_API_TOKEN`，可以在 `settings.json` 中这样使用：`"apiKey": "$MY_API_TOKEN"`。
 
