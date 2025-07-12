@@ -38,40 +38,39 @@ Gemini CLI 需要您通过 Google 的 AI 服务进行身份验证。在初始启
        ```
 
 3. **Vertex AI：**
-   - 如果不使用快速模式：
-     - 确保您拥有 Google Cloud 项目并已启用 Vertex AI API。
-     - 使用以下命令设置应用程序默认凭据（ADC）：
-       ```bash
-       gcloud auth application-default login
-       ```
-       有关更多信息，请参阅[为 Google Cloud 设置应用程序默认凭据](https://cloud.google.com/docs/authentication/provide-credentials-adc)。
-     - 设置 `GOOGLE_CLOUD_PROJECT`、`GOOGLE_CLOUD_LOCATION` 和 `GOOGLE_GENAI_USE_VERTEXAI` 环境变量。在以下方法中，将 `YOUR_PROJECT_ID` 和 `YOUR_PROJECT_LOCATION` 替换为项目的相关值：
-       - 您可以使用以下命令在当前 shell 会话中临时设置这些环境变量：
-         ```bash
-         export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"
-         export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION" # 例如，us-central1
-         export GOOGLE_GENAI_USE_VERTEXAI=true
-         ```
-       - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
-         ```bash
-         echo 'export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"' >> ~/.bashrc
-         echo 'export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"' >> ~/.bashrc
-         echo 'export GOOGLE_GENAI_USE_VERTEXAI=true' >> ~/.bashrc
-         source ~/.bashrc
-         ```
-   - 如果使用快速模式：
-     - 设置 `GOOGLE_API_KEY` 环境变量。在以下方法中，将 `YOUR_GOOGLE_API_KEY` 替换为快速模式提供的 Vertex AI API 密钥：
-       - 您可以使用以下命令在当前 shell 会话中临时设置这些环境变量：
-         ```bash
-         export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"
-         export GOOGLE_GENAI_USE_VERTEXAI=true
-         ```
-       - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
-         ```bash
-         echo 'export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"' >> ~/.bashrc
-         echo 'export GOOGLE_GENAI_USE_VERTEXAI=true' >> ~/.bashrc
-         source ~/.bashrc
-         ```
+    - 获取您的 Google Cloud API 密钥：[获取 API 密钥](https://cloud.google.com/vertex-ai/generative-ai/docs/start/api-keys?usertype=newuser)
+      - 设置 `GOOGLE_API_KEY` 环境变量。在以下方法中，将 `YOUR_GOOGLE_API_KEY` 替换为您的 Vertex AI API 密钥：
+        - 您可以使用以下命令在当前 shell 会话中临时设置这些环境变量：
+          ```bash
+          export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"
+          ```
+        - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
+          ```bash
+          echo 'export GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY"' >> ~/.bashrc
+          source ~/.bashrc
+          ```
+    - 要使用应用程序默认凭据（ADC），请使用以下命令：
+      - 确保您拥有 Google Cloud 项目并已启用 Vertex AI API。
+        ```bash
+        gcloud auth application-default login
+        ```
+        有关更多信息，请参阅[为 Google Cloud 设置应用程序默认凭据](https://cloud.google.com/docs/authentication/provide-credentials-adc)。
+      - 设置 `GOOGLE_CLOUD_PROJECT` 和 `GOOGLE_CLOUD_LOCATION` 环境变量。在以下方法中，将 `YOUR_PROJECT_ID` 和 `YOUR_PROJECT_LOCATION` 替换为项目的相关值：
+        - 您可以使用以下命令在当前 shell 会话中临时设置这些环境变量：
+          ```bash
+          export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"
+          export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION" # 例如，us-central1
+          ```
+        - 为了重复使用，您可以将环境变量添加到您的 [.env 文件](#使用-env-文件持久化环境变量)或您的 shell 配置文件（如 `~/.bashrc`、`~/.zshrc` 或 `~/.profile`）。例如，以下命令将环境变量添加到 `~/.bashrc` 文件：
+          ```bash
+          echo 'export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"' >> ~/.bashrc
+          echo 'export GOOGLE_CLOUD_LOCATION="YOUR_PROJECT_LOCATION"' >> ~/.bashrc
+          source ~/.bashrc
+          ```
+4. **Cloud Shell：**
+    - 此选项仅在 Google Cloud Shell 环境中运行时可用。
+    - 它会自动使用 Cloud Shell 环境中已登录用户的凭据。
+    - 当在 Cloud Shell 中运行且未配置其他方法时，这是默认的身份验证方法。
 
 ### 使用 `.env` 文件持久化环境变量
 

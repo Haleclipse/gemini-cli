@@ -2,6 +2,25 @@
 
 ## 更新历史
 
+### 2025-07-12 更新
+- **提交范围**: 8f12e8a1..b3cbde5c
+- **新增提交数**: 15
+- **版本**: v0.1.11
+- **PR链接**: [#3946](https://github.com/google-gemini/gemini-cli/pull/3946), [#3951](https://github.com/google-gemini/gemini-cli/pull/3951), [#1580](https://github.com/google-gemini/gemini-cli/pull/1580), [#3943](https://github.com/google-gemini/gemini-cli/pull/3943)
+
+#### 主要更改
+- **剪贴板支持**: 为 macOS 添加剪贴板图片粘贴支持
+- **UI 改进**: 主题对话框添加滚动功能，修复 Markdown 渲染中的额外空白
+- **路径修复**: 修复 Gemini 尝试在需要绝对路径的地方使用相对路径的问题
+- **新功能**: 添加 --prompt-interactive/-i 标志支持
+- **日志增强**: 添加 Flash 回退日志和 clearcut 日志记录
+- **OAuth 改进**: 添加 OAuth 测试，修复未定义 authType 的错误
+- **视觉提示**: 为夜间版本添加视觉提示
+- **斜杠命令**: 将 /theme 更新到新的斜杠命令架构
+- **MCP 支持**: 为 SSE 传输 MCP 服务器添加 headers 支持
+- **文档修复**: 修复 README.md 中关于 Vertex AI API 密钥的拼写错误
+- **系统指令**: 确保系统指令也使用 <state_snapshot>
+
 ### 2025-07-09 更新
 - **提交范围**: 9273e8dd..da50a1ee
 - **新增提交数**: 24

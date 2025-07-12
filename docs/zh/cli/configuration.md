@@ -200,6 +200,14 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
     "hideTips": true
     ```
 
+- **`maxSessionTurns`**（数字）：
+  - **描述：** 设置会话的最大轮数。如果会话超过此限制，CLI 将停止处理并开始新的聊天。
+  - **默认值：** `-1`（无限制）
+  - **示例：**
+    ```json
+    "maxSessionTurns": 10
+    ```
+
 ### 示例 `settings.json`：
 
 ```json
@@ -224,7 +232,8 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
     "logPrompts": true
   },
   "usageStatisticsEnabled": true,
-  "hideTips": false
+  "hideTips": false,
+  "maxSessionTurns": 10
 }
 ```
 
