@@ -31,21 +31,32 @@ features:
 ## 🔄 Latest Upstream Updates
 
 ::: info Version Status
-- **Current Version**: 0.1.5
+- **Current Version**: v0.1.12
 - **Fork Status**: Synced to latest ✅
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-06-27)
+### Recent Sync (2025-07-17)
 
-Merged **5 new commits** from upstream:
+Merged **66 new commits** from upstream with major architecture refactoring and feature updates:
 
-#### Key Changes
-- ⚠️ **Rollback**: Model selection feature (#1983) - Auto Pro/Flash switching reverted
-- ✨ **Enhancement**: Added clear error message for missing subcommand (#2019)
-- 💬 **Improvement**: Product name "Gemini CLI" now shown in initial message (#2037)
-- 📦 **Added**: Repository field in package.json files (#2032)
-- 🔧 **Added**: Pre-publish checks for better release quality (#2052)
+#### 🚀 Major Feature Updates
+- 🔧 **Slash Command Refactoring**: Massive migration of 12 slash commands to new architecture (/quit, /bug, /editor, /tools, /docs, /mcp, /compress, /extensions, /stats, /about, /privacy, /auth)
+- 💻 **IDE Integration**: Introduced VS Code companion extension with /ide status and /ide install commands
+- 📋 **Official Roadmap**: Released project roadmap and contribution guidelines
+- 🔄 **Loop Detection**: Introduced intelligent loop detection service to prevent infinite loops
+
+#### ⚙️ New Features and Configuration
+- 🎛️ **hideBanner Setting**: Added startup banner disable option
+- 📊 **maxSessionTurns**: Support for configuring maximum session turns
+- 🔐 **GEMINI_DEFAULT_AUTH_TYPE**: Default authentication type support
+- 🚀 **Performance**: Background model availability checks for faster startup
+
+#### 🔧 Tools and Improvements
+- 📦 **Google/genai v1.9.0**: Updated to latest version with parametersJsonSchema support
+- 🎯 **Tool Summarization**: Centralized shell tool summarization and alphabetical sorting
+- ⌨️ **Shortcuts**: CTRL+C clears input buffer functionality
+- 🔧 **MCP Enhancements**: Support for server allowlist/blocklist configuration
 
 ---
 
