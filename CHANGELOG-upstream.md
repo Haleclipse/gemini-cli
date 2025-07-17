@@ -4,41 +4,50 @@
 
 ## 更新历史
 
+### 2025-07-17 更新
+- **提交范围**: b3cbde5c..9ab44ea9
+- **新增提交数**: 66
+- **版本**: v0.1.12
+
+### 2025-07-16 更新
+- **提交范围**: ddcac420..34c1b581
+- **新增提交数**: 22
+- **版本**: v0.1.12
+
+### 2025-07-15 更新
+- **提交范围**: b09bc665..fadc4770
+- **新增提交数**: 18
+- **版本**: v0.1.12
+
+### 2025-07-14 更新
+- **提交范围**: e9d680e8..ef8ec984
+- **新增提交数**: 8
+- **版本**: v0.1.12
+
+### 2025-07-13 更新
+- **提交范围**: b018e2d3..890982a8
+- **新增提交数**: 8
+- **版本**: v0.1.12
+
 ### 2025-07-12 更新
 - **提交范围**: 8f12e8a1..b3cbde5c
 - **新增提交数**: 15
 - **版本**: v0.1.11
-- **PR链接**: [#3946](https://github.com/google-gemini/gemini-cli/pull/3946), [#3951](https://github.com/google-gemini/gemini-cli/pull/3951), [#1580](https://github.com/google-gemini/gemini-cli/pull/1580), [#3943](https://github.com/google-gemini/gemini-cli/pull/3943)
 
-#### 主要更改
-- **剪贴板支持**: 为 macOS 添加剪贴板图片粘贴支持
-- **UI 改进**: 主题对话框添加滚动功能，修复 Markdown 渲染中的额外空白
-- **路径修复**: 修复 Gemini 尝试在需要绝对路径的地方使用相对路径的问题
-- **新功能**: 添加 --prompt-interactive/-i 标志支持
-- **日志增强**: 添加 Flash 回退日志和 clearcut 日志记录
-- **OAuth 改进**: 添加 OAuth 测试，修复未定义 authType 的错误
-- **视觉提示**: 为夜间版本添加视觉提示
-- **斜杠命令**: 将 /theme 更新到新的斜杠命令架构
-- **MCP 支持**: 为 SSE 传输 MCP 服务器添加 headers 支持
-- **文档修复**: 修复 README.md 中关于 Vertex AI API 密钥的拼写错误
-- **系统指令**: 确保系统指令也使用 <state_snapshot>
+### 2025-07-11 更新
+- **提交范围**: cdbe2fff..bf508bfd
+- **新增提交数**: 15
+- **版本**: v0.1.10
+
+### 2025-07-10 更新
+- **提交范围**: 5ecc1372..b7f8e136
+- **新增提交数**: 4
+- **版本**: v0.1.10
 
 ### 2025-07-09 更新
 - **提交范围**: 9273e8dd..da50a1ee
 - **新增提交数**: 24
 - **版本**: v0.1.9
-- **PR链接**: [#3498](https://github.com/google-gemini/gemini-cli/pull/3498), [#3039](https://github.com/google-gemini/gemini-cli/pull/3039), [#3600](https://github.com/google-gemini/gemini-cli/pull/3600)
-
-#### 主要更改
-- **系统管理**: 新增系统级设置配置支持，允许管理员在企业环境中控制 Gemini CLI 设置
-- **API 增强**: 工具调用和 API 响应中添加 TurnId 以改善错误日志
-- **MCP 服务器**: 使用 yargs 数组类型处理 allowedMcpServerNames 标志
-- **错误处理**: 改进配额和资源相关的 429 错误处理，支持 Code Assist 客户等级
-- **依赖管理**: 更新多个依赖包，包括 google-auth-library、dotenv、ws 等
-- **终端优化**: 在 --help 命令中使用完整终端宽度显示
-- **服务条款**: 更新服务条款和隐私声明以提高清晰度
-- **调试功能**: 修复 MCP 服务器的调试标志问题
-- **配额管理**: 在 Flash 模型发生 429/配额故障切换时移除自动执行功能
 
 ### 2025-07-08 更新
 - **提交范围**: a4097ae6..9273e8dd
@@ -104,7 +113,88 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-07-08）
+## 最新更改（2025-07-17）
+
+### 🔧 斜杠命令架构重构
+- **[#4259](https://github.com/google-gemini/gemini-cli/pull/4259)** - 🔧 将 `/quit` 更新到新的斜杠命令架构
+- **[#4246](https://github.com/google-gemini/gemini-cli/pull/4246)** - 🔧 将 `/bug` 更新到新的斜杠命令架构
+- **[#4153](https://github.com/google-gemini/gemini-cli/pull/4153)** - 🔧 将 `/editor` 更新到新的斜杠命令架构
+- **[#4236](https://github.com/google-gemini/gemini-cli/pull/4236)** - 🔧 将 `/tools` 更新到新的斜杠命令架构
+- **[#4133](https://github.com/google-gemini/gemini-cli/pull/4133)** - 🔧 将 `/docs` 更新到新的斜杠命令架构
+- **[#3678](https://github.com/google-gemini/gemini-cli/pull/3678)** - 🔧 将 MCP 斜杠命令迁移到新系统
+- **[#4271](https://github.com/google-gemini/gemini-cli/pull/4271)** - 🔧 迁移 compress 命令
+- **[#4229](https://github.com/google-gemini/gemini-cli/pull/4229)** - 🔧 将 `/extensions` 更新到新的斜杠命令架构
+- **[#4146](https://github.com/google-gemini/gemini-cli/pull/4146)** - 🔧 将 `/stats` 更新到新的斜杠命令架构
+- **[#4207](https://github.com/google-gemini/gemini-cli/pull/4207)** - 🔧 迁移 /about
+- **[#4202](https://github.com/google-gemini/gemini-cli/pull/4202)** - 🔧 将 /privacy 迁移到新架构
+- **[#3797](https://github.com/google-gemini/gemini-cli/pull/3797)** - 🔧 将 '/auth' 更新到新的斜杠命令架构
+
+### 🔧 IDE 集成和扩展支持
+- **[#4331](https://github.com/google-gemini/gemini-cli/pull/4331)** - 🔧 IDE 伴侣服务器的小幅重构
+- **[#4265](https://github.com/google-gemini/gemini-cli/pull/4265)** - ✨ 添加 /ide status 和 /ide install 命令来管理 IDE 集成
+- **[#4311](https://github.com/google-gemini/gemini-cli/pull/4311)** - 🎨 IDE 模式的小幅 UX 更新
+- **[#4254](https://github.com/google-gemini/gemini-cli/pull/4254)** - 📦 在构建/发布中包含配套 VS Code 扩展 VSIX
+- **[#4308](https://github.com/google-gemini/gemini-cli/pull/4308)** - ⏪ 撤销 "[ide-mode] 将活动文件通过系统提示"
+- **[#4264](https://github.com/google-gemini/gemini-cli/pull/4264)** - 🔧 [ide-mode] 将活动文件通过系统提示
+- **[#4255](https://github.com/google-gemini/gemini-cli/pull/4255)** - 🔧 在 VSCode 扩展中动态设置端口并从中读取
+- **[#4241](https://github.com/google-gemini/gemini-cli/pull/4241)** - 📦 上传配套 VS Code 扩展的 VSIX
+- **[#4147](https://github.com/google-gemini/gemini-cli/pull/4147)** - 🔧 [ide-mode] 当活动文件更改时流式通知
+- **[#4154](https://github.com/google-gemini/gemini-cli/pull/4154)** - 🎨 将用户在 IDE 中的活动文件添加到页脚
+- **[#3927](https://github.com/google-gemini/gemini-cli/pull/3927)** - 🚩 为 IDE 集成添加功能标志
+- **[#3917](https://github.com/google-gemini/gemini-cli/pull/3917)** - ✨ 引入 VSCode 伴侣扩展
+
+### 🔧 模型和性能改进
+- **[#4176](https://github.com/google-gemini/gemini-cli/pull/4176)** - 🔧 更新 google/genai 到 v1.9.0 并切换到 parametersJsonSchema 用于 MCP 相关工具
+- **[#4256](https://github.com/google-gemini/gemini-cli/pull/4256)** - 🚀 在后台运行模型可用性检查以加速启动
+- **[#4016](https://github.com/google-gemini/gemini-cli/pull/4016)** - 🐛 修复不使用 flash 进行下一个说话者检查
+- **[#4009](https://github.com/google-gemini/gemini-cli/pull/4009)** - 🔧 **[工具]**: 集中化 shell 工具摘要
+- **[#3095](https://github.com/google-gemini/gemini-cli/pull/3095)** - 🔧 **[工具]**: 按字母顺序排序工具列表以获得确定性输出
+
+### 🎯 用户体验和 UI 改进
+- **[#1729](https://github.com/google-gemini/gemini-cli/pull/1729)** - 🔧 **[cli]**: 在不执行命令时，CTRL+C 清除输入缓冲区
+- **[#2857](https://github.com/google-gemini/gemini-cli/pull/2857)** - 🔧 重构：优化 "/chat list" 和 "/chat resume" 的显示信息
+- **[#4227](https://github.com/google-gemini/gemini-cli/pull/4227)** - 🔧 改进斜杠命令中的 altName 完成行为
+- **[#2233](https://github.com/google-gemini/gemini-cli/pull/2233)** - 🔧 更新 MaxSizedBox.tsx
+- **[#4006](https://github.com/google-gemini/gemini-cli/pull/4006)** - 🔧 **功能**: 在 RadioButtonSelect 中反转滚动箭头默认值
+- **[#4002](https://github.com/google-gemini/gemini-cli/pull/4002)** - 🔧 **功能**: 添加 GEMINI_DEFAULT_AUTH_TYPE 支持
+- **[#2803](https://github.com/google-gemini/gemini-cli/pull/2803)** - 🔧 **[cli]**: 添加 hideBanner 设置以禁用启动横幅
+
+### 🔧 工具和功能增强
+- **[#4135](https://github.com/google-gemini/gemini-cli/pull/4135)** - 🔧 在设置中添加对允许/排除 MCP 服务器名称的支持
+- **[#4140](https://github.com/google-gemini/gemini-cli/pull/4140)** - 🔧 仅在 settings.json 中明确设置时启用工具摘要
+- **[#4158](https://github.com/google-gemini/gemini-cli/pull/4158)** - 🔧 使 @ 命令排序文件时不带扩展名
+- **[#4193](https://github.com/google-gemini/gemini-cli/pull/4193)** - 🔧 记录 2 种类型的循环检测
+- **[#3919](https://github.com/google-gemini/gemini-cli/pull/3919)** - 🔧 引入循环检测服务以打破简单循环
+- **[#4064](https://github.com/google-gemini/gemini-cli/pull/4064)** - 🔧 重新添加对用 \ 字符转义换行的支持
+
+### 🐛 修复和改进
+- **[#4144](https://github.com/google-gemini/gemini-cli/pull/4144)** - 🐛 **[检查点]**: 防止静默失败并为非 Git 项目启用
+- **[#4141](https://github.com/google-gemini/gemini-cli/pull/4141)** - 🐛 不要用函数响应开始未压缩历史记录
+- **[#4150](https://github.com/google-gemini/gemini-cli/pull/4150)** - 🐛 修复 telemetry 日志记录中的循环引用 JSON 序列化
+- **[#4163](https://github.com/google-gemini/gemini-cli/pull/4163)** - 🔧 纯重构：合并 isWithinRoot() 函数调用
+- **[#4049](https://github.com/google-gemini/gemini-cli/pull/4049)** - 🔧 在调试模式下显示 mcp 服务器的 stderr 输出
+- **[#4240](https://github.com/google-gemini/gemini-cli/pull/4240)** - 🔧 在 header 中包含 api key 而不是在 URL 中
+
+### 📝 文档和发布改进
+- **[#4178](https://github.com/google-gemini/gemini-cli/pull/4178)** - 📋 路线图发布
+- **[#4051](https://github.com/google-gemini/gemini-cli/pull/4051)** - 📝 为 /extensions 命令添加文档
+- **[#3381](https://github.com/google-gemini/gemini-cli/pull/3381)** - 🐛 修复 markdown 标题级别问题
+- **[#3781](https://github.com/google-gemini/gemini-cli/pull/3781)** - 🐛 **[docs]**: 在 readme 中澄清全局安装
+- **[#2763](https://github.com/google-gemini/gemini-cli/pull/2763)** - 🐛 修复：在 README 中标准化 "Troubleshooting Guide" 的大小写
+- **[#4249](https://github.com/google-gemini/gemini-cli/pull/4249)** - 🔧 chore: 更新 release-docker.yaml 中的编号
+- **[#4025](https://github.com/google-gemini/gemini-cli/pull/4025)** - 🐛 修复 docker release yaml 使用正确的命令
+- **[#4023](https://github.com/google-gemini/gemini-cli/pull/4023)** - 🔧 chore(release): v0.1.12
+
+### 🔧 其他改进
+- **[#4252](https://github.com/google-gemini/gemini-cli/pull/4252)** - ⏪ 撤销 "更新到 yargs v18 (#3759)"
+- **[#4244](https://github.com/google-gemini/gemini-cli/pull/4244)** - ⏪ 撤销 Node <20 警告
+- **[#3371](https://github.com/google-gemini/gemini-cli/pull/3371)** - 🔧 **功能**: 如果用户使用 node -v <20 则添加警告 #2930
+- **[#3759](https://github.com/google-gemini/gemini-cli/pull/3759)** - 🔧 更新到 yargs v18
+- **[#3880](https://github.com/google-gemini/gemini-cli/pull/3880)** - 🔧 重构 MCP 代码以供重用和测试
+- **[#3885](https://github.com/google-gemini/gemini-cli/pull/3885)** - 🐛 **[core]**: 使注释掉的测试可工作
+- **[#3985](https://github.com/google-gemini/gemini-cli/pull/3985)** - 🐛 **[auth]**: 移除无头认证的尖锐边缘
+
+## 之前的更改（2025-07-08）
 
 ### 🔧 依赖管理和质量提升
 - **[#3557](https://github.com/google-gemini/gemini-cli/pull/3557)** - 🔧 修复 shell-quote 版本

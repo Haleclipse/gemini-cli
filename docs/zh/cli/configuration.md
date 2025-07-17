@@ -208,6 +208,14 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
     "maxSessionTurns": 10
     ```
 
+- **`hideBanner`**（布尔值）：
+  - **描述：** 启用或禁用启动横幅的显示。
+  - **默认值：** `false`
+  - **示例：**
+    ```json
+    "hideBanner": true
+    ```
+
 ### 示例 `settings.json`：
 
 ```json
@@ -233,7 +241,8 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
   },
   "usageStatisticsEnabled": true,
   "hideTips": false,
-  "maxSessionTurns": 10
+  "maxSessionTurns": 10,
+  "hideBanner": false
 }
 ```
 
