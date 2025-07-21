@@ -8,6 +8,7 @@ import {
   SlashCommand,
   SlashCommandActionReturn,
   CommandContext,
+  CommandKind,
 } from './types.js';
 import {
   DiscoveredMCPTool,
@@ -49,8 +50,9 @@ const getMcpStatus = async (
 
   const mcpServers = config.getMcpServers() || {};
   const serverNames = Object.keys(mcpServers);
+  const blockedMcpServers = config.getBlockedMcpServers() || [];
 
-  if (serverNames.length === 0) {
+  if (serverNames.length === 0 && blockedMcpServers.length === 0) {
     const docsUrl = 'https://goo.gle/gemini-cli-docs-mcp';
     if (process.env.SANDBOX && process.env.SANDBOX !== 'sandbox-exec') {
       return {
@@ -118,9 +120,13 @@ const getMcpStatus = async (
 
     // Get server description if available
     const server = mcpServers[serverName];
+    let serverDisplayName = serverName;
+    if (server.extensionName) {
+      serverDisplayName += ` (from ${server.extensionName})`;
+    }
 
     // Format server header with bold formatting and status
-    message += `${statusIndicator} \u001b[1m${serverName}\u001b[0m - ${statusText}`;
+    message += `${statusIndicator} \u001b[1m${serverDisplayName}\u001b[0m - ${statusText}`;
 
     // Add tool count with conditional messaging
     if (status === MCPServerStatus.CONNECTED) {
@@ -192,6 +198,14 @@ const getMcpStatus = async (
     message += '\n';
   }
 
+  for (const server of blockedMcpServers) {
+    let serverDisplayName = server.name;
+    if (server.extensionName) {
+      serverDisplayName += ` (from ${server.extensionName})`;
+    }
+    message += `🔴 \u001b[1m${serverDisplayName}\u001b[0m - Blocked\n\n`;
+  }
+
   // Add helpful tips when no arguments are provided
   if (showTips) {
     message += '\n';
@@ -216,6 +230,7 @@ const getMcpStatus = async (
 export const mcpCommand: SlashCommand = {
   name: 'mcp',
   description: 'list configured MCP servers and tools',
+  kind: CommandKind.BUILT_IN,
   action: async (context: CommandContext, args: string) => {
     const lowerCaseArgs = args.toLowerCase().split(/\s+/).filter(Boolean);
 

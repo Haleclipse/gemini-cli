@@ -132,6 +132,8 @@ In addition to a project settings file, a project's `.gemini` directory can cont
       - `cwd` (string, optional): The working directory in which to start the server.
       - `timeout` (number, optional): Timeout in milliseconds for requests to this MCP server.
       - `trust` (boolean, optional): Trust this server and bypass all tool call confirmations.
+      - `includeTools` (array of strings, optional): List of tool names to include from this MCP server. When specified, only the tools listed here will be available from this server (whitelist behavior). If not specified, all tools from the server are enabled by default.
+      - `excludeTools` (array of strings, optional): List of tool names to exclude from this MCP server. Tools listed here will not be available to the model, even if they are exposed by the server. **Note:** `excludeTools` takes precedence over `includeTools` - if a tool is in both lists, it will be excluded.
   - **Example:**
     ```json
     "mcpServers": {
@@ -139,12 +141,14 @@ In addition to a project settings file, a project's `.gemini` directory can cont
         "command": "python",
         "args": ["mcp_server.py", "--port", "8080"],
         "cwd": "./mcp_tools/python",
-        "timeout": 5000
+        "timeout": 5000,
+        "includeTools": ["safe_tool", "file_reader"],
       },
       "myNodeServer": {
         "command": "node",
         "args": ["mcp_server.js"],
-        "cwd": "./mcp_tools/node"
+        "cwd": "./mcp_tools/node",
+        "excludeTools": ["dangerous_tool", "file_deleter"]
       },
       "myDockerServer": {
         "command": "docker",
@@ -363,13 +367,16 @@ Arguments passed directly when running the CLI can override other configurations
 - **`--telemetry-log-prompts`**:
   - Enables logging of prompts for telemetry. See [telemetry](../telemetry.md) for more information.
 - **`--checkpointing`**:
-  - Enables [checkpointing](./commands.md#checkpointing-commands).
+  - Enables [checkpointing](../checkpointing.md).
 - **`--extensions <extension_name ...>`** (**`-e <extension_name ...>`**):
   - Specifies a list of extensions to use for the session. If not provided, all available extensions are used.
   - Use the special term `gemini -e none` to disable all extensions.
   - Example: `gemini -e my-extension -e my-other-extension`
 - **`--list-extensions`** (**`-l`**):
   - Lists all available extensions and exits.
+- **`--proxy`**:
+  - Sets the proxy for the CLI.
+  - Example: `--proxy http://localhost:7890`.
 - **`--version`**:
   - Displays the version of the CLI.
 
