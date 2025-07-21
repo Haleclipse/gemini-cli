@@ -91,6 +91,8 @@ Gemini CLI 使用您的 `settings.json` 文件中的 `mcpServers` 配置来定�
 - **`cwd`**（字符串）：Stdio 传输的工作目录
 - **`timeout`**（数字）：请求超时，以毫秒为单位（默认：600,000ms = 10 分钟）
 - **`trust`**（布尔值）：当为 `true` 时，绕过此服务器的所有工具调用确认（默认：`false`）
+- **`includeTools`**（字符串数组）：从此 MCP 服务器包含的工具名称列表。指定后，只有此处列出的工具才能从此服务器使用（白名单行为）。如果未指定，默认启用服务器的所有工具。
+- **`excludeTools`**（字符串数组）：从此 MCP 服务器排除的工具名称列表。此处列出的工具将不会对模型可用，即使它们由服务器公开。**注意：** `excludeTools` 优先于 `includeTools` - 如果一个工具同时出现在两个列表中，它将被排除。
 
 ### 示例配置
 
@@ -166,6 +168,22 @@ Gemini CLI 使用您的 `settings.json` 文件中的 `mcpServers` 配置来定�
 }
 ```
 
+#### 带工具过滤的 MCP 服务器
+
+```json
+{
+  "mcpServers": {
+    "filteredServer": {
+      "command": "python",
+      "args": ["-m", "my_mcp_server"],
+      "includeTools": ["safe_tool", "file_reader", "data_processor"],
+      // "excludeTools": ["dangerous_tool", "file_deleter"],
+      "timeout": 30000
+    }
+  }
+}
+```
+
 ## 发现过程深入了解
 
 当 Gemini CLI 启动时，它通过以下详细过程执行 MCP 服务器发现：
@@ -188,7 +206,8 @@ Gemini CLI 使用您的 `settings.json` 文件中的 `mcpServers` 配置来定�
 
 1. **工具列表：** 客户端调用 MCP 服务器的工具列表端点
 2. **模式验证：** 验证每个工具的函数声明
-3. **名称清理：** 清理工具名称以满足 Gemini API 要求：
+3. **工具过滤：** 基于 `includeTools` 和 `excludeTools` 配置过滤工具
+4. **名称清理：** 清理工具名称以满足 Gemini API 要求：
    - 无效字符（非字母数字、下划线、点、连字符）被替换为下划线
    - 超过 63 个字符的名称被截断并进行中间替换（`___`）
 

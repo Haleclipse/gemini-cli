@@ -129,6 +129,8 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
       - `cwd`（字符串，可选）：启动服务器的工作目录。
       - `timeout`（数字，可选）：对此 MCP 服务器请求的超时时间（毫秒）。
       - `trust`（布尔值，可选）：信任此服务器并绕过所有工具调用确认。
+      - `includeTools`（字符串数组，可选）：要从此 MCP 服务器包含的工具名称列表。指定后，只有此处列出的工具才能从此服务器使用（白名单行为）。如果未指定，默认启用服务器的所有工具。
+      - `excludeTools`（字符串数组，可选）：要从此 MCP 服务器排除的工具名称列表。此处列出的工具将不会对模型可用，即使它们由服务器公开。**注意：** `excludeTools` 优先于 `includeTools` - 如果一个工具同时出现在两个列表中，它将被排除。
   - **示例：**
     ```json
     "mcpServers": {
@@ -136,12 +138,14 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
         "command": "python",
         "args": ["mcp_server.py", "--port", "8080"],
         "cwd": "./mcp_tools/python",
-        "timeout": 5000
+        "timeout": 5000,
+        "includeTools": ["safe_tool", "file_reader"]
       },
       "myNodeServer": {
         "command": "node",
         "args": ["mcp_server.js"],
-        "cwd": "./mcp_tools/node"
+        "cwd": "./mcp_tools/node",
+        "excludeTools": ["dangerous_tool", "file_deleter"]
       },
       "myDockerServer": {
         "command": "docker",

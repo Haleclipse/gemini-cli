@@ -4,7 +4,32 @@
 
 ## 更新历史
 
+### 2025-07-21 更新
+- **提交范围**: 9ab44ea9..e4ed1aab
+- **新增提交数**: 60
+- **版本**: v0.1.13
+
+### 2025-07-20 更新
+- **提交范围**: ac8e9851..0d64355b
+- **新增提交数**: 6
+- **版本**: v0.1.13
+
+### 2025-07-19 更新
+- **提交范围**: 2f5eecfc..ac8e9851
+- **新增提交数**: 11
+- **版本**: v0.1.13
+
+### 2025-07-18 更新
+- **提交范围**: ca07b5b0..2f5eecfc
+- **新增提交数**: 18
+- **版本**: v0.1.13
+
 ### 2025-07-17 更新
+- **提交范围**: e4ed1aab..ca07b5b0
+- **新增提交数**: 16
+- **版本**: v0.1.13
+
+### 之前的更新 2025-07-17
 - **提交范围**: b3cbde5c..9ab44ea9
 - **新增提交数**: 66
 - **版本**: v0.1.12
@@ -113,7 +138,83 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-07-17）
+## 最新更改（2025-07-21）
+
+### 🚀 重大功能发布
+- **[#4515](https://github.com/google-gemini/gemini-cli/pull/4515)** - 🎉 **发布 v0.1.13** - 包含 IDE 集成、后台代理、自定义主题等重要功能
+- **[#4407](https://github.com/google-gemini/gemini-cli/pull/4407)** - ✨ **后台命令支持** - 添加 /background 命令（需要配置后台代理）
+- **[#4409](https://github.com/google-gemini/gemini-cli/pull/4409)** - 🎬 **后台代理演示** - 展示后台代理功能
+
+### 🔧 IDE 模式和文件管理增强
+- **[#4463](https://github.com/google-gemini/gemini-cli/pull/4463)** - 📁 **IDE 模式文件追踪** - 跟踪最近打开的文件并发送给 CLI
+- **[#4470](https://github.com/google-gemini/gemini-cli/pull/4470)** - 🎯 **IDE 文件显示优化** - 在输入框上方的上下文区域显示 IDE 打开文件
+- **[#4329](https://github.com/google-gemini/gemini-cli/pull/4329)** - 📡 **IDE 连接保持** - IDE 模式每 30 秒发送 ping 防止客户端关闭连接
+- **[#4312](https://github.com/google-gemini/gemini-cli/pull/4312)** - 📝 **活动文件集成** - 将活动文件添加到用户模型请求中
+
+### 🔧 核心架构和性能改进
+- **[#4511](https://github.com/google-gemini/gemini-cli/pull/4511)** - 🏗️ **命令服务重构** - 为可扩展命令进行命令服务预重构
+- **[#4337](https://github.com/google-gemini/gemini-cli/pull/4337)** - 🤖 **AI 循环检测** - 使用 LLM 实现循环检测
+- **[#3288](https://github.com/google-gemini/gemini-cli/pull/3288)** - ⚡ **异步文件检测** - 使文件类型检测和二进制检查异步化
+
+### 🎨 用户体验和 UI 改进  
+- **[#2639](https://github.com/google-gemini/gemini-cli/pull/2639)** - 🎨 **自定义主题逻辑** - 功能完整的自定义主题逻辑
+- **[#4012](https://github.com/google-gemini/gemini-cli/pull/4012)** - 👁️ **光标隐藏** - 终端失焦时隐藏光标
+- **[#4462](https://github.com/google-gemini/gemini-cli/pull/4462)** - 🎯 **命令补全改进** - 基于光标位置改进命令补全触发逻辑
+- **[#4396](https://github.com/google-gemini/gemini-cli/pull/4396)** - ☀️ **浅色主题改进** - 浅色主题色彩改进
+
+### 🔧 新命令和工具
+- **[#3706](https://github.com/google-gemini/gemini-cli/pull/3706)** - 📋 **复制命令** - 使用新命令服务方法添加 /copy 命令用于复制输出到剪贴板
+- **[#3727](https://github.com/google-gemini/gemini-cli/pull/3727)** - 🚫 **.geminiignore 支持** - 在设置和相应工具调用中完整实现 .geminiignore
+- **[#4419](https://github.com/google-gemini/gemini-cli/pull/4419)** - 🐕 **迁移 /corgi** - 将 /corgi 命令迁移到新架构
+- **[#4388](https://github.com/google-gemini/gemini-cli/pull/4388)** - 🔄 **迁移恢复命令** - 迁移恢复命令到新架构
+
+### 🛠️ 开发者工具和集成
+- **[#4266](https://github.com/google-gemini/gemini-cli/pull/4266)** - 🟢 **Zed 集成** - 添加 Zed 编辑器集成支持
+- **[#3680](https://github.com/google-gemini/gemini-cli/pull/3680)** - 📝 **Zed 编辑器检测** - 如果未找到 zed 二进制文件则检查 zeditor
+- **[#4542](https://github.com/google-gemini/gemini-cli/pull/4542)** - ⚠️ **根目录警告** - 在根目录调用 gemini-cli 时添加警告
+- **[#2526](https://github.com/google-gemini/gemini-cli/pull/2526)** - 🌐 **显式代理选项** - 在 CLI 中添加显式代理选项
+
+### 🐛 修复和改进
+- **[#4479](https://github.com/google-gemini/gemini-cli/pull/4479)** - ⏪ **回滚后台代理提交** - 回滚后台代理相关提交
+- **[#4475](https://github.com/google-gemini/gemini-cli/pull/4475)** - 🔄 **非交互环境检测** - 自动检测非交互环境并回退到手动基于代码的认证流程
+- **[#4440](https://github.com/google-gemini/gemini-cli/pull/4440)** - 📊 **显示拒绝的确认代码差异** - 显示被拒绝的确认代码差异
+- **[#4469](https://github.com/google-gemini/gemini-cli/pull/4469)** - 🐚 **Shell 输出一致性** - 使 shell 输出保持一致
+- **[#4377](https://github.com/google-gemini/gemini-cli/pull/4377)** - ⬆️⬇️ **历史记录导航修复** - 修复仅有一个建议时允许上下箭头切换历史记录
+- **[#4374](https://github.com/google-gemini/gemini-cli/pull/4374)** - 🛠️ **退出快捷键回归修复** - 修复命令迁移导致的退出快捷键回归
+
+### 🔐 认证和安全改进
+- **[#4316](https://github.com/google-gemini/gemini-cli/pull/4316)** - 🔐 **MCP OAuth 基础架构** - MCP OAuth 第一部分 - OAuth 基础架构
+- **[#3532](https://github.com/google-gemini/gemini-cli/pull/3532)** - 🐳 **Docker OAuth 支持** - 增强 OAuth 回调以实现强大的 Docker 支持
+- **[#4052](https://github.com/google-gemini/gemini-cli/pull/4052)** - 📦 **本地运行更新检测** - 本地运行 gemini-cli 时不显示更新可用消息
+
+### 🔧 MCP 和扩展改进
+- **[#4514](https://github.com/google-gemini/gemini-cli/pull/4514)** - ⏱️ **MCP 服务器超时扩展** - 扩展 mcp-server 超时时间
+- **[#4508](https://github.com/google-gemini/gemini-cli/pull/4508)** - 💬 **简化 MCP 连接错误** - 简化 MCP 连接错误消息
+- **[#4459](https://github.com/google-gemini/gemini-cli/pull/4459)** - 🛠️ **MCP 工具名称简化** - 尽可能使用简单的 MCP 工具名称
+- **[#3977](https://github.com/google-gemini/gemini-cli/pull/3977)** - 📊 **启动摘要** - 启动时总结扩展和 MCP 服务器
+- **[#3409](https://github.com/google-gemini/gemini-cli/pull/3409)** - 📝 **MCP 工具文档** - 为 mcp excludeTools 和 includeTools 添加文档
+
+### 🔧 构建和发布改进
+- **[#4428](https://github.com/google-gemini/gemini-cli/pull/4428)** - 🛠️ **修复发布和 e2e 工作流** - 修复损坏的发布和 e2e 工作流
+- **[#3501](https://github.com/google-gemini/gemini-cli/pull/3501)** - 📦 **依赖完整性** - 为所有依赖项添加缺失的 `resolved` 和 `integrity`
+- **[#4287](https://github.com/google-gemini/gemini-cli/pull/4287)** - 🧪 **测试/添加 loadcodeassist 模拟** - 测试中添加 loadcodeassist 模拟
+- **[#4296](https://github.com/google-gemini/gemini-cli/pull/4296)** - 📋 **ESLint 更新** - 更新 ESLint 和相关包到最新版本
+
+### 🐛 Bug 修复
+- **[#3550](https://github.com/google-gemini/gemini-cli/pull/3550)** - 🔤 **修复拼写错误** - 修复各种文件中的拼写错误
+- **[#3417](https://github.com/google-gemini/gemini-cli/pull/3417)** - 🛠️ **防止 GitIgnoreParser 错误** - 防止根路径的 GitIgnoreParser 中的 RangeError
+- **[#3999](https://github.com/google-gemini/gemini-cli/pull/3999)** - 💥 **修复 ANSI 转义崩溃** - 修复文本缓冲区中的 ANSI 转义崩溃
+- **[#4382](https://github.com/google-gemini/gemini-cli/pull/4382)** - ⚠️ **companionPort 警告** - 将 companionPort 不存在更新为警告，以便用户仍可继续运行 /ide install
+- **[#4362](https://github.com/google-gemini/gemini-cli/pull/4362)** - 📊 **记录表面字段** - 在 start_session_event 中记录表面字段以及会话信息
+- **[#4162](https://github.com/google-gemini/gemini-cli/pull/4162)** - 🔄 **上下文百分比更新** - 运行 /clear 命令时更新上下文百分比
+- **[#4348](https://github.com/google-gemini/gemini-cli/pull/4348)** - 🔄 **修复循环计数重置** - 修复每隔一个事件重置循环计数的问题
+- **[#4304](https://github.com/google-gemini/gemini-cli/pull/4304)** - 📖 **修复检查点文档链接** - 修复 `--checkpointing` 的检查点文档链接
+- **[#4176](https://github.com/google-gemini/gemini-cli/pull/4176)** - 🔄 **更新 google/genai** - 更新 google/genai 到 v1.9.0 并切换到 parametersJsonSchema 用于 MCP 相关工具
+- **[#4289](https://github.com/google-gemini/gemini-cli/pull/4289)** - 🗑️ **移除 gaxios 依赖** - 移除直接的 gaxios 依赖
+- **[#4320](https://github.com/google-gemini/gemini-cli/pull/4320)** - 🔢 **选择列表添加数字** - 为选择列表添加数字
+- **[#4397](https://github.com/google-gemini/gemini-cli/pull/4397)** - 🎯 **完美匹配命令执行** - 允许在完美匹配时执行命令
+
+## 之前的更改（2025-07-17）
 
 ### 🔧 斜杠命令架构重构
 - **[#4259](https://github.com/google-gemini/gemini-cli/pull/4259)** - 🔧 将 `/quit` 更新到新的斜杠命令架构

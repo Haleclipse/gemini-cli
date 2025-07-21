@@ -31,23 +31,29 @@ features:
 ## 🔄 Latest Upstream Updates
 
 ::: info Version Status
-- **Current Version**: v0.1.12
+- **Current Version**: v0.1.13
 - **Fork Status**: Synced to latest ✅
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-07-17)
+### Recent Sync (2025-07-21)
 
-Merged **66 new commits** from upstream with major architecture refactoring and feature updates:
+Merged **60 new commits** from upstream with IDE enhancements and background agent support:
 
 #### 🚀 Major Feature Updates
-- 🔧 **Slash Command Refactoring**: Massive migration of 12 slash commands to new architecture (/quit, /bug, /editor, /tools, /docs, /mcp, /compress, /extensions, /stats, /about, /privacy, /auth)
-- 💻 **IDE Integration**: Introduced VS Code companion extension with /ide status and /ide install commands
-- 📋 **Official Roadmap**: Released project roadmap and contribution guidelines
-- 🔄 **Loop Detection**: Introduced intelligent loop detection service to prevent infinite loops
+- 🎉 **Release v0.1.13**: Contains IDE integration, background agent, custom themes and other important features
+- ✨ **Background Agent Support**: Added /background commands (requires background agent configuration)
+- 📁 **IDE File Tracking**: Track recently opened files and send them to CLI
+- 🎨 **Custom Theme Logic**: Feature-complete custom theme logic
+- 🟢 **Zed Editor Integration**: Added Zed editor integration support
+- 🏗️ **Command Service Refactoring**: Command service refactoring for extensible commands
 
-#### ⚙️ New Features and Configuration
-- 🎛️ **hideBanner Setting**: Added startup banner disable option
+#### 🔧 New Features and Improvements
+- 📋 **Copy Command**: Added /copy command for copying output to clipboard
+- 🚫 **.geminiignore Support**: Full implementation of .geminiignore functionality
+- 🤖 **AI Loop Detection**: Loop detection implemented using LLM
+- 👁️ **Cursor Hiding**: Hide cursor when terminal is unfocused
+- 🔐 **MCP OAuth Infrastructure**: OAuth infrastructure support
 - 📊 **maxSessionTurns**: Support for configuring maximum session turns
 - 🔐 **GEMINI_DEFAULT_AUTH_TYPE**: Default authentication type support
 - 🚀 **Performance**: Background model availability checks for faster startup
