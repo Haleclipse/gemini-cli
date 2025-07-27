@@ -4,6 +4,36 @@
 
 ## 更新历史
 
+### 2025-07-27 更新
+- **提交范围**: 9e61b351..576cebc9
+- **新增提交数**: 1
+- **版本**: v0.1.14
+
+### 2025-07-26 更新
+- **提交范围**: 3e81359c..9e61b351
+- **新增提交数**: 1
+- **版本**: v0.1.14
+
+### 2025-07-25 更新
+- **提交范围**: 1d3ad9d0..3e81359c
+- **新增提交数**: 30
+- **版本**: v0.1.14
+
+### 2025-07-24 更新
+- **提交范围**: 52980510..5d4b02ca
+- **新增提交数**: 12
+- **版本**: v0.1.14
+
+### 2025-07-23 更新
+- **提交范围**: 1de24623..0ef9c0b7
+- **新增提交数**: 14
+- **版本**: v0.1.14
+
+### 2025-07-22 更新
+- **提交范围**: 258c8489..7c3a8407
+- **新增提交数**: 9
+- **版本**: v0.1.14
+
 ### 2025-07-21 更新
 - **提交范围**: 9ab44ea9..e4ed1aab
 - **新增提交数**: 60
@@ -138,7 +168,63 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-07-21）
+## 最新更改（2025-07-27）
+
+### 🚀 Vim 模式和自定义命令增强
+- **[#3936](https://github.com/google-gemini/gemini-cli/pull/3936)** - ⌨️ **Vim 模式** - 完整的 Vim 编辑器支持，包括 NORMAL/INSERT 模式切换
+- **[#4917](https://github.com/google-gemini/gemini-cli/pull/4917)** - 🐚 **自定义命令 Shell 执行** - 添加自定义命令中的 Shell 命令执行功能
+- **[#4907](https://github.com/google-gemini/gemini-cli/pull/4907)** - 🔗 **自定义命令符号链接支持** - 修复自定义命令跟随符号链接
+
+### 🏗️ 核心架构改进
+- **[#4823](https://github.com/google-gemini/gemini-cli/pull/4823)** - 🔧 **Shell 逻辑中心化** - 将 shell 逻辑集中到 ShellExecutionService
+- **[#4831](https://github.com/google-gemini/gemini-cli/pull/4831)** - 🔒 **基于哈希的循环检测** - 实现基于哈希的循环检测机制
+- **[#4795](https://github.com/google-gemini/gemini-cli/pull/4795)** - 🛡️ **更安全的 Shell 命令执行** - 改进 Shell 命令执行的安全性
+
+### 🪟 Windows 兼容性大幅改进
+- **[#4672](https://github.com/google-gemini/gemini-cli/pull/4672)** - 🪟 **Windows 预提交测试** - 在 Windows 上运行预提交测试
+- **[#4889](https://github.com/google-gemini/gemini-cli/pull/4889)** - 🐛 修复 grep.test 在 Windows 上工作
+- **[#4891](https://github.com/google-gemini/gemini-cli/pull/4891)** - 🐛 使 glob.test.ts 兼容 Windows
+- **[#4892](https://github.com/google-gemini/gemini-cli/pull/4892)** - 🐛 使 fileDiscoveryService.test.ts 兼容 Windows
+- **[#4895](https://github.com/google-gemini/gemini-cli/pull/4895)** - 🐛 使 oauth2 测试兼容 Windows
+- **[#4873](https://github.com/google-gemini/gemini-cli/pull/4873)** - 🐛 使 restoreCommand 测试兼容 Windows
+- **[#4868](https://github.com/google-gemini/gemini-cli/pull/4868)** - 🐛 修复 userStartupWarnings 兼容 Windows
+- **[#4858](https://github.com/google-gemini/gemini-cli/pull/4858)** - 🐛 使 shell.test.ts 兼容 Windows
+- **[#4766](https://github.com/google-gemini/gemini-cli/pull/4766)** - 🐛 使 useCompletion.test.ts 兼容 Windows
+- **[#4856](https://github.com/google-gemini/gemini-cli/pull/4856)** - 🐛 使 errorReporting 测试兼容 Windows
+- **[#4864](https://github.com/google-gemini/gemini-cli/pull/4864)** - 🐛 修复 read-file.test.ts 兼容 Windows
+- **[#4684](https://github.com/google-gemini/gemini-cli/pull/4684)** - 🐛 修复 atCommandProcessor.ts 中的 Windows 错误
+
+### 🔧 MCP 服务器提示和 IDE 增强
+- **[#4828](https://github.com/google-gemini/gemini-cli/pull/4828)** - 📝 **MCP 服务器提示作为斜杠命令** - 加载并使用 MCP 服务器提示作为 CLI 中的斜杠命令
+- **[#4797](https://github.com/google-gemini/gemini-cli/pull/4797)** - 🏢 **IDE 管理器类** - 创建 IDE 管理器类来处理连接和暴露 IDE 服务器方法
+- **[#4902](https://github.com/google-gemini/gemini-cli/pull/4902)** - 🔧 **IDE 连接清理** - 修复 IDE 连接失败时清理传输
+- **[#4761](https://github.com/google-gemini/gemini-cli/pull/4761)** - 🔧 **VS Code 扩展重构** - VS Code 伴侣扩展代码的小幅重构
+- **[#4729](https://github.com/google-gemini/gemini-cli/pull/4729)** - 📚 **扩展文档优化** - 发布前优化伴侣扩展 README 和 package.json
+
+### 🎨 用户体验改进
+- **[#4733](https://github.com/google-gemini/gemini-cli/pull/4733)** - 🕐 **聊天列表时间戳** - 在 /chat list 中显示时间戳
+- **[#3990](https://github.com/google-gemini/gemini-cli/pull/3990)** - 🧹 **启动屏幕清理** - 从启动屏幕移除多余的空白
+- **[#4417](https://github.com/google-gemini/gemini-cli/pull/4417)** - 🛡️ **更优雅的错误处理** - 更优雅地处理未处理的拒绝
+- **[#4757](https://github.com/google-gemini/gemini-cli/pull/4757)** - 🎨 **旧版主题兼容** - 修复旧版自定义主题仍能加载
+
+### 🔧 认证和工具改进
+- **[#4811](https://github.com/google-gemini/gemini-cli/pull/4811)** - 🔐 **非交互式 GCP 认证增强** - 增强非交互式 GCP 认证
+- **[#4887](https://github.com/google-gemini/gemini-cli/pull/4887)** - 🐛 **拖放文件修复** - 修复破坏文件拖放的错误
+- **[#4575](https://github.com/google-gemini/gemini-cli/pull/4575)** - 🔧 **partUtils 模块** - 添加带单元测试的 partUtils 模块
+
+### 📚 文档更新
+- **[#4950](https://github.com/google-gemini/gemini-cli/pull/4950)** - 📝 **添加 --prompt-interactive 文档** - 添加缺失的 --prompt-interactive/-i 标志文档
+- **[#2004](https://github.com/google-gemini/gemini-cli/pull/2004)** - 📝 **认证文档更新** - 在 authentication.md 中添加 API 密钥和 .gemini/.env 的说明
+
+### 🔍 日志和监控改进
+- **[#4700](https://github.com/google-gemini/gemini-cli/pull/4700)** - 📊 **Flash 继续日志** - 记录 flash 继续
+- **[#4698](https://github.com/google-gemini/gemini-cli/pull/4698)** - 📊 **Flash 模型决定日志** - 当 flash 模型决定继续时记录
+- **[#4765](https://github.com/google-gemini/gemini-cli/pull/4765)** - 🆔 **循环检测提示 ID** - 检测到循环时记录提示 ID
+
+### 🚀 版本发布
+- **[#3a224d49](https://github.com/google-gemini/gemini-cli/commit/3a224d49)** - 🎉 **发布 v0.1.14** - 包含 Vim 模式、Windows 兼容性改进和众多增强功能
+
+## 之前的更改（2025-07-21）
 
 ### 🚀 重大功能发布
 - **[#4515](https://github.com/google-gemini/gemini-cli/pull/4515)** - 🎉 **发布 v0.1.13** - 包含 IDE 集成、后台代理、自定义主题等重要功能

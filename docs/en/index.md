@@ -31,32 +31,32 @@ features:
 ## 🔄 Latest Upstream Updates
 
 ::: info Version Status
-- **Current Version**: v0.1.13
+- **Current Version**: v0.1.14
 - **Fork Status**: Synced to latest ✅
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-07-21)
+### Recent Sync (2025-07-27)
 
-Merged **60 new commits** from upstream with IDE enhancements and background agent support:
+Merged **84 new commits** from upstream with Vim mode and Windows compatibility improvements:
 
 #### 🚀 Major Feature Updates
-- 🎉 **Release v0.1.13**: Contains IDE integration, background agent, custom themes and other important features
-- ✨ **Background Agent Support**: Added /background commands (requires background agent configuration)
-- 📁 **IDE File Tracking**: Track recently opened files and send them to CLI
-- 🎨 **Custom Theme Logic**: Feature-complete custom theme logic
-- 🟢 **Zed Editor Integration**: Added Zed editor integration support
-- 🏗️ **Command Service Refactoring**: Command service refactoring for extensible commands
+- 🎉 **Release v0.1.14**: Contains Vim mode, Windows compatibility improvements and many enhancements
+- ⌨️ **Vim Mode**: Complete Vim editor support with NORMAL/INSERT mode switching
+- 🪟 **Windows Compatibility**: Major improvements to Windows platform testing and compatibility
+- 🐚 **Custom Command Shell Execution**: Execute shell commands within custom commands
+- 📝 **MCP Server Prompts**: Load MCP server prompts as slash commands
+- 🏢 **IDE Manager Class**: Create IDE manager class to handle connections
 
 #### 🔧 New Features and Improvements
-- 📋 **Copy Command**: Added /copy command for copying output to clipboard
-- 🚫 **.geminiignore Support**: Full implementation of .geminiignore functionality
-- 🤖 **AI Loop Detection**: Loop detection implemented using LLM
-- 👁️ **Cursor Hiding**: Hide cursor when terminal is unfocused
-- 🔐 **MCP OAuth Infrastructure**: OAuth infrastructure support
-- 📊 **maxSessionTurns**: Support for configuring maximum session turns
-- 🔐 **GEMINI_DEFAULT_AUTH_TYPE**: Default authentication type support
-- 🚀 **Performance**: Background model availability checks for faster startup
+- 🏗️ **Shell Logic Centralization**: Centralize shell logic into ShellExecutionService
+- 🔒 **Hash-based Loop Detection**: Implement hash-based loop detection mechanism
+- 🕐 **Chat List Timestamps**: Display timestamps in /chat list
+- 🔐 **Non-interactive GCP Auth**: Enhanced non-interactive GCP authentication
+- 🎨 **Legacy Theme Compatibility**: Fix legacy custom themes to still load
+- 🛡️ **Safer Shell Execution**: Improved shell command execution security
+- 📝 **Documentation Updates**: Added --prompt-interactive flag documentation
+- 🧹 **Startup Screen Cleanup**: Remove extraneous whitespace from startup screen
 
 #### 🔧 Tools and Improvements
 - 📦 **Google/genai v1.9.0**: Updated to latest version with parametersJsonSchema support
