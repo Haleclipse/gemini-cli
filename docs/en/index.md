@@ -31,32 +31,32 @@ features:
 ## 🔄 Latest Upstream Updates
 
 ::: info Version Status
-- **Current Version**: v0.1.14
+- **Current Version**: v0.1.16
 - **Fork Status**: Synced to latest ✅
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-07-27)
+### Recent Sync (2025-08-02)
 
-Merged **84 new commits** from upstream with Vim mode and Windows compatibility improvements:
+Merged **75 new commits** from upstream with auto-update and new commands:
 
 #### 🚀 Major Feature Updates
-- 🎉 **Release v0.1.14**: Contains Vim mode, Windows compatibility improvements and many enhancements
-- ⌨️ **Vim Mode**: Complete Vim editor support with NORMAL/INSERT mode switching
-- 🪟 **Windows Compatibility**: Major improvements to Windows platform testing and compatibility
-- 🐚 **Custom Command Shell Execution**: Execute shell commands within custom commands
-- 📝 **MCP Server Prompts**: Load MCP server prompts as slash commands
-- 🏢 **IDE Manager Class**: Create IDE manager class to handle connections
+- 🎉 **Release v0.1.16**: Contains auto-update, new commands, and important fixes
+- 🔄 **Auto-Update**: Improved update checks and refactored for better testability
+- 🛠️ **New Commands**: Added /setup-github, /init, and directory management commands
+- 📝 **Prompt Propagation**: Implemented prompt propagation functionality
+- ⚡ **Flash Lite Model**: Tool calls switched to gemini-2.5-flash-lite model
+- 🔐 **Security Policy**: Added standard Google security policy documentation
 
 #### 🔧 New Features and Improvements
-- 🏗️ **Shell Logic Centralization**: Centralize shell logic into ShellExecutionService
-- 🔒 **Hash-based Loop Detection**: Implement hash-based loop detection mechanism
-- 🕐 **Chat List Timestamps**: Display timestamps in /chat list
-- 🔐 **Non-interactive GCP Auth**: Enhanced non-interactive GCP authentication
-- 🎨 **Legacy Theme Compatibility**: Fix legacy custom themes to still load
-- 🛡️ **Safer Shell Execution**: Improved shell command execution security
-- 📝 **Documentation Updates**: Added --prompt-interactive flag documentation
-- 🧹 **Startup Screen Cleanup**: Remove extraneous whitespace from startup screen
+- 🌐 **Default IPv4 DNS Resolution**: Prioritize IPv4 DNS resolution by default
+- 🔗 **Slash Command Autocompletion**: Improved autocompletion with completionStart/End
+- 🔐 **Disable Startup Auth Validation**: Added setting to disable authentication validation at startup
+- 📦 **SANDBOX_FLAGS Support**: Added support for custom container options
+- 🎨 **History Highlighting**: Highlight slash commands in history
+- 🐛 **Vim Newline Support Fix**: Fixed replaceRange handling newlines bug
+- 📝 **@ Autocompletion Improvements**: Improved @ autocompletion for mid-sentence editing
+- 📚 **New Documentation**: Added keyboard shortcuts and .geminiignore functionality documentation
 
 #### 🔧 Tools and Improvements
 - 📦 **Google/genai v1.9.0**: Updated to latest version with parametersJsonSchema support
