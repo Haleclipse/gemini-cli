@@ -31,32 +31,32 @@ features:
 ## 🔄 Latest Upstream Updates
 
 ::: info Version Status
-- **Current Version**: v0.1.16
+- **Current Version**: v0.1.18
 - **Fork Status**: Synced to latest ✅
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-08-02)
+### Recent Sync (2025-08-06)
 
-Merged **75 new commits** from upstream with auto-update and new commands:
+Merged **72 new commits** from upstream with memory discovery, MCP command management and high-performance file search:
 
 #### 🚀 Major Feature Updates
-- 🎉 **Release v0.1.16**: Contains auto-update, new commands, and important fixes
-- 🔄 **Auto-Update**: Improved update checks and refactored for better testability
-- 🛠️ **New Commands**: Added /setup-github, /init, and directory management commands
-- 📝 **Prompt Propagation**: Implemented prompt propagation functionality
-- ⚡ **Flash Lite Model**: Tool calls switched to gemini-2.5-flash-lite model
-- 🔐 **Security Policy**: Added standard Google security policy documentation
+- 🎉 **Release v0.1.18**: Contains memory discovery, MCP command management and high-performance file search
+- 🎉 **Release v0.1.17**: Contains multi-directory workspace and IDE mode improvements
+- 🧠 **Memory Discovery Improvements**: Enhanced error handling and path processing stability in memory discovery
+- 🛠️ **MCP Command Management**: Added `gemini mcp` commands for `add`, `remove` and `list` MCP servers
+- 🚀 **High-Performance File Search**: Introduced high-performance file search engine with non-recursive support
+- 🎯 **GitHub Integration Enhancement**: Enhanced /setup-github command with official GitHub Action support
 
 #### 🔧 New Features and Improvements
-- 🌐 **Default IPv4 DNS Resolution**: Prioritize IPv4 DNS resolution by default
-- 🔗 **Slash Command Autocompletion**: Improved autocompletion with completionStart/End
-- 🔐 **Disable Startup Auth Validation**: Added setting to disable authentication validation at startup
-- 📦 **SANDBOX_FLAGS Support**: Added support for custom container options
-- 🎨 **History Highlighting**: Highlight slash commands in history
-- 🐛 **Vim Newline Support Fix**: Fixed replaceRange handling newlines bug
-- 📝 **@ Autocompletion Improvements**: Improved @ autocompletion for mid-sentence editing
-- 📚 **New Documentation**: Added keyboard shortcuts and .geminiignore functionality documentation
+- 🏢 **Multi-Directory Workspace**: Support for configuring multi-directory workspaces in settings.json
+- 🔧 **IDE Mode Improvements**: Refactored IDE client state management with improved error messages and connection logging
+- ⚡ **Performance Optimization**: Implemented parallel file processing for 74% performance improvement
+- 📋 **MCP Feature Enhancements**: Support for multimodal tool responses, OAuth2 audience, and prompt-only servers
+- 🔍 **Cyclic Detection**: Detect and warn about cyclic tool reference errors
+- 🎨 **User Experience**: Enhanced @ autocompletion, fixed Vim mode, and optimized UI responsiveness
+- 🔧 **Configuration Management**: Support for setting model from settings.json and improved config loading
+- 📚 **Documentation Improvements**: Added automation triage process documentation and fixed multiple doc issues
 
 #### 🔧 Tools and Improvements
 - 📦 **Google/genai v1.9.0**: Updated to latest version with parametersJsonSchema support
