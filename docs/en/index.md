@@ -36,27 +36,27 @@ features:
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-08-06)
+### Recent Sync (2025-08-11)
 
-Merged **72 new commits** from upstream with memory discovery, MCP command management and high-performance file search:
+Merged **70 new commits** from upstream with settings UI, README overhaul and user experience improvements:
 
 #### 🚀 Major Feature Updates
-- 🎉 **Release v0.1.18**: Contains memory discovery, MCP command management and high-performance file search
-- 🎉 **Release v0.1.17**: Contains multi-directory workspace and IDE mode improvements
-- 🧠 **Memory Discovery Improvements**: Enhanced error handling and path processing stability in memory discovery
-- 🛠️ **MCP Command Management**: Added `gemini mcp` commands for `add`, `remove` and `list` MCP servers
-- 🚀 **High-Performance File Search**: Introduced high-performance file search engine with non-recursive support
-- 🎯 **GitHub Integration Enhancement**: Enhanced /setup-github command with official GitHub Action support
+- 📖 **README Overhaul**: Enhanced clarity and user experience-oriented structure
+- ⚙️ **Settings Command & UI Panel**: Added /settings command with visual settings interface
+- ⚙️ **Enable Default Usage Stats**: Fixed default usage statistics collection in settings
+- 🔢 **Code Block Line Numbers**: Added showLineNumbers config option to hide code block line numbers
+- 🌟 **MCP Roots Support**: Added MCP Roots support for enhanced extensibility
+- ⌨️ **Double ESC Input Clear**: Enhanced input UX with double ESC quick clear support
 
 #### 🔧 New Features and Improvements
-- 🏢 **Multi-Directory Workspace**: Support for configuring multi-directory workspaces in settings.json
-- 🔧 **IDE Mode Improvements**: Refactored IDE client state management with improved error messages and connection logging
-- ⚡ **Performance Optimization**: Implemented parallel file processing for 74% performance improvement
-- 📋 **MCP Feature Enhancements**: Support for multimodal tool responses, OAuth2 audience, and prompt-only servers
-- 🔍 **Cyclic Detection**: Detect and warn about cyclic tool reference errors
-- 🎨 **User Experience**: Enhanced @ autocompletion, fixed Vim mode, and optimized UI responsiveness
-- 🔧 **Configuration Management**: Support for setting model from settings.json and improved config loading
-- 📚 **Documentation Improvements**: Added automation triage process documentation and fixed multiple doc issues
+- 🔗 **Centralized Key Bindings**: Removed duplicate bindings and added complete navigation commands
+- ✅ **Chat Save Overwrite Confirmation**: Added overwrite confirmation dialog for `/chat save`
+- 📱 **Narrow Terminal UI Adaptation**: Improved UI layout adaptation for narrow terminal displays
+- 💡 **Humorous Newline Tips**: Added entertaining tips for newline shortcuts
+- 🚫 **Reduced UI Flickering**: Optimized editor file display to reduce interface flickering
+- 🧹 **Removed Deprecated Options**: Removed obsolete configuration options from CLI arguments
+- 🏢 **IDE Integration Enhancements**: Improved diff rendering, environment variable support, and folder trust dialogs
+- 🔧 **Configuration Documentation**: Enhanced chatCompression and showLineNumbers config documentation
 
 #### 🔧 Tools and Improvements
 - 📦 **Google/genai v1.9.0**: Updated to latest version with parametersJsonSchema support

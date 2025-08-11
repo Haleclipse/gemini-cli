@@ -220,6 +220,25 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
     "hideBanner": true
     ```
 
+- **`chatCompression`**（对象）：
+  - **描述：** 控制聊天历史压缩的设置，包括自动压缩和通过 /compress 命令手动调用的压缩。
+  - **属性：**
+    - **`contextPercentageThreshold`**（数字）：介于 0 和 1 之间的值，以模型总标记限制的百分比形式指定压缩的标记阈值。例如，值 `0.6` 将在聊天历史超过标记限制的 60% 时触发压缩。
+  - **示例：**
+    ```json
+    "chatCompression": {
+      "contextPercentageThreshold": 0.6
+    }
+    ```
+
+- **`showLineNumbers`**（布尔值）：
+  - **描述：** 控制是否在 CLI 输出的代码块中显示行号。
+  - **默认值：** `true`
+  - **示例：**
+    ```json
+    "showLineNumbers": false
+    ```
+
 ### 示例 `settings.json`：
 
 ```json
