@@ -357,6 +357,13 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
   - 显示当前内存使用情况。
 - **`--yolo`**：
   - 启用 YOLO 模式，自动批准所有工具调用。
+- **`--approval-mode <mode>`**：
+  - 设置工具调用的批准模式。可用模式：
+    - `default`：在每次工具调用时提示批准（默认行为）
+    - `auto_edit`：自动批准编辑工具（replace、write_file）同时对其他工具提示
+    - `yolo`：自动批准所有工具调用（等同于 `--yolo`）
+  - 不能与 `--yolo` 一起使用。使用 `--approval-mode=yolo` 代替 `--yolo` 以采用新的统一方法。
+  - 示例：`gemini --approval-mode auto_edit`
 - **`--telemetry`**：
   - 启用[遥测](../telemetry.md)。
 - **`--telemetry-target`**：
@@ -443,7 +450,7 @@ Gemini CLI 可以在沙盒环境中执行潜在不安全的操作（如 shell �
 
 - 使用 `--sandbox` 或 `-s` 标志。
 - 设置 `GEMINI_SANDBOX` 环境变量。
-- 在 `--yolo` 模式下默认启用沙盒。
+- 使用 `--yolo` 或 `--approval-mode=yolo` 时默认启用沙盒。
 
 默认情况下，它使用预构建的 `gemini-cli-sandbox` Docker 镜像。
 

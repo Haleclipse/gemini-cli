@@ -31,32 +31,32 @@ features:
 ## 🔄 Latest Upstream Updates
 
 ::: info Version Status
-- **Current Version**: v0.1.18
+- **Current Version**: v0.1.20
 - **Fork Status**: Synced to latest ✅
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-08-11)
+### Recent Sync (2025-08-13)
 
-Merged **70 new commits** from upstream with settings UI, README overhaul and user experience improvements:
+Merged **44 new commits** from upstream with VS Code IDE integration, approval modes and testing upgrades:
 
 #### 🚀 Major Feature Updates
-- 📖 **README Overhaul**: Enhanced clarity and user experience-oriented structure
-- ⚙️ **Settings Command & UI Panel**: Added /settings command with visual settings interface
-- ⚙️ **Enable Default Usage Stats**: Fixed default usage statistics collection in settings
-- 🔢 **Code Block Line Numbers**: Added showLineNumbers config option to hide code block line numbers
-- 🌟 **MCP Roots Support**: Added MCP Roots support for enhanced extensibility
-- ⌨️ **Double ESC Input Clear**: Enhanced input UX with double ESC quick clear support
+- 🎉 **Release v0.1.20**: Fixed CI workflow YAML format issues
+- 🎉 **Release v0.1.19**: Contains VS Code IDE integration, testing upgrades and approval modes
+- 🚀 **VS Code IDE Integration Launch**: Officially launched VS Code IDE integration functionality
+- 🏛️ **Approval Mode Parameter**: Added --approval-mode parameter with default, auto_edit, yolo modes
+- ⌨️ **Single Ctrl+C Cancel**: Support single Ctrl+C to cancel streaming while preserving double Ctrl+C exit
+- 🔬 **Integration Tests Upgrade to Vitest**: Upgraded integration tests from legacy framework to Vitest
 
 #### 🔧 New Features and Improvements
-- 🔗 **Centralized Key Bindings**: Removed duplicate bindings and added complete navigation commands
-- ✅ **Chat Save Overwrite Confirmation**: Added overwrite confirmation dialog for `/chat save`
-- 📱 **Narrow Terminal UI Adaptation**: Improved UI layout adaptation for narrow terminal displays
-- 💡 **Humorous Newline Tips**: Added entertaining tips for newline shortcuts
-- 🚫 **Reduced UI Flickering**: Optimized editor file display to reduce interface flickering
-- 🧹 **Removed Deprecated Options**: Removed obsolete configuration options from CLI arguments
-- 🏢 **IDE Integration Enhancements**: Improved diff rendering, environment variable support, and folder trust dialogs
-- 🔧 **Configuration Documentation**: Enhanced chatCompression and showLineNumbers config documentation
+- 📝 **Integration Tests Refactored to TypeScript**: Refactored integration tests to TypeScript for improved type safety
+- 🏢 **IDE Integration Improvements**: Updated installation logic, workspace path handling and sandbox detection
+- 📚 **GitHub Documentation Pages**: Created documentation pages based on GitHub documentation
+- 🔄 **Input Processing Upgrade**: Switched from useInput to useKeypress
+- 🧹 **CI Workflow Security**: Ensured CI workflow consistency and prevented injection attacks
+- ⚡ **Performance Improvements**: Added --experimental-cli to accelerate prettier formatting
+- 📊 **Telemetry Enhancements**: Improved Clearcut logging and error status code recording
+- 🔧 **Tool Architecture Upgrades**: Migrated tools to use parametersJsonSchema and responseJsonSchema
 
 #### 🔧 Tools and Improvements
 - 📦 **Google/genai v1.9.0**: Updated to latest version with parametersJsonSchema support
