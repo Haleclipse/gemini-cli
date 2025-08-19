@@ -24,7 +24,7 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
   - **位置：** 项目根目录内的 `.gemini/settings.json`。
   - **作用域：** 仅在从特定项目运行 Gemini CLI 时适用。项目设置会覆盖用户设置。
 - **系统设置文件：**
-  - **位置：** `/etc/gemini-cli/settings.json`（Linux）、`C:\ProgramData\gemini-cli\settings.json`（Windows）或 `/Library/Application Support/GeminiCli/settings.json`（macOS）。
+  - **位置：** `/etc/gemini-cli/settings.json`（Linux）、`C:\ProgramData\gemini-cli\settings.json`（Windows）或 `/Library/Application Support/GeminiCli/settings.json`（macOS）。路径可以使用 `GEMINI_CLI_SYSTEM_SETTINGS_PATH` 环境变量覆盖。
   - **作用域：** 适用于系统中所有用户的所有 Gemini CLI 会话。系统设置会覆盖用户和项目设置。对于企业中的系统管理员控制用户的 Gemini CLI 设置可能很有用。
 
 **设置中环境变量的注意事项：** 您的 `settings.json` 文件中的字符串值可以使用 `$VAR_NAME` 或 `${VAR_NAME}` 语法引用环境变量。加载设置时，这些变量将自动解析。例如，如果您有环境变量 `MY_API_TOKEN`，可以在 `settings.json` 中这样使用：`"apiKey": "$MY_API_TOKEN"`。
@@ -78,11 +78,22 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
   - **示例：** `"coreTools": ["ReadFileTool", "GlobTool", "ShellTool(ls)"]`。
 
 - **`excludeTools`**（字符串数组）：
-
   - **描述：** 允许您指定应该从模型中排除的核心工具名称列表。同时列在 `excludeTools` 和 `coreTools` 中的工具将被排除。您还可以为支持的工具指定命令特定的限制，例如 `ShellTool`。例如，`"excludeTools": ["ShellTool(rm -rf)"]` 将阻止 `rm -rf` 命令。
   - **默认值**：不排除任何工具。
   - **示例：** `"excludeTools": ["run_shell_command", "findFiles"]`。
   - **安全注意事项：** 对于 `run_shell_command` 在 `excludeTools` 中的命令特定限制基于简单的字符串匹配，可以轻易绕过。此功能**不是安全机制**，不应依赖它来安全地执行不受信任的代码。建议使用 `coreTools` 明确选择可以执行的命令。
+
+- **`allowMCPServers`**（字符串数组）：
+  - **描述：** 允许您指定应该对模型可用的 MCP 服务器名称列表。这可以用来限制要连接的 MCP 服务器集合。请注意，如果设置了 `--allowed-mcp-server-names`，这将被忽略。
+  - **默认值：** 所有 MCP 服务器都可供 Gemini 模型使用。
+  - **示例：** `"allowMCPServers": ["myPythonServer"]`。
+  - **安全注意事项：** 这使用对 MCP 服务器名称的简单字符串匹配，可以修改。如果您是系统管理员，希望阻止用户绕过此设置，请考虑在系统设置级别配置 `mcpServers`，这样用户将无法配置任何自己的 MCP 服务器。这不应作为严密的安全机制使用。
+
+- **`excludeMCPServers`**（字符串数组）：
+  - **描述：** 允许您指定应该从模型中排除的 MCP 服务器名称列表。同时列在 `excludeMCPServers` 和 `allowMCPServers` 中的服务器将被排除。请注意，如果设置了 `--allowed-mcp-server-names`，这将被忽略。
+  - **默认值**：不排除任何 MCP 服务器。
+  - **示例：** `"excludeMCPServers": ["myNodeServer"]`。
+  - **安全注意事项：** 这使用对 MCP 服务器名称的简单字符串匹配，可以修改。如果您是系统管理员，希望阻止用户绕过此设置，请考虑在系统设置级别配置 `mcpServers`，这样用户将无法配置任何自己的 MCP 服务器。这不应作为严密的安全机制使用。
 
 - **`autoAccept`**（布尔值）：
 
@@ -91,10 +102,14 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
   - **示例：** `"autoAccept": true`
 
 - **`theme`**（字符串）：
-
   - **描述：** 设置 Gemini CLI 的视觉[主题](./themes.md)。
   - **默认值：** `"Default"`
   - **示例：** `"theme": "GitHub"`
+
+- **`vimMode`**（布尔值）：
+  - **描述：** 启用或禁用输入编辑的 vim 模式。启用后，输入区域支持 vim 风格的导航和编辑命令，具有 NORMAL 和 INSERT 模式。vim 模式状态显示在页脚中，并在会话之间保持。
+  - **默认值：** `false`
+  - **示例：** `"vimMode": true`
 
 - **`sandbox`**（布尔值或字符串）：
 
@@ -149,11 +164,11 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
       },
       "myDockerServer": {
         "command": "docker",
-        "args": ["run", "i", "--rm", "-e", "API_KEY", "ghcr.io/foo/bar"],
+        "args": ["run", "-i", "--rm", "-e", "API_KEY", "ghcr.io/foo/bar"],
         "env": {
           "API_KEY": "$MY_API_TOKEN"
         }
-      },
+      }
     }
     ```
 
@@ -199,9 +214,16 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
   - **描述：** 启用或禁用 CLI 界面中的有用提示。
   - **默认值：** `false`
   - **示例：**
-
     ```json
     "hideTips": true
+    ```
+
+- **`hideBanner`**（布尔值）：
+  - **描述：** 启用或禁用 CLI 界面中的启动横幅（ASCII 艺术徽标）。
+  - **默认值：** `false`
+  - **示例：**
+    ```json
+    "hideBanner": true
     ```
 
 - **`maxSessionTurns`**（数字）：
@@ -212,12 +234,45 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
     "maxSessionTurns": 10
     ```
 
-- **`hideBanner`**（布尔值）：
-  - **描述：** 启用或禁用启动横幅的显示。
+- **`summarizeToolOutput`**（对象）：
+  - **描述：** 启用或禁用工具输出的摘要。您可以使用 `tokenBudget` 设置指定摘要的标记预算。
+  - 注意：目前仅支持 `run_shell_command` 工具。
+  - **默认值：** `{}`（默认禁用）
+  - **示例：**
+    ```json
+    "summarizeToolOutput": {
+      "run_shell_command": {
+        "tokenBudget": 2000
+      }
+    }
+    ```
+
+- **`excludedProjectEnvVars`**（字符串数组）：
+  - **描述：** 指定应排除从项目 `.env` 文件加载的环境变量。这防止项目特定的环境变量（如 `DEBUG=true`）干扰 gemini-cli 的行为。来自 `.gemini/.env` 文件的变量从不被排除。
+  - **默认值：** `["DEBUG", "DEBUG_MODE"]`
+  - **示例：**
+    ```json
+    "excludedProjectEnvVars": ["DEBUG", "DEBUG_MODE", "NODE_ENV"]
+    ```
+
+- **`includeDirectories`**（字符串数组）：
+  - **描述：** 指定要包含在工作空间上下文中的其他绝对或相对路径数组。这允许您跨多个目录工作，就像它们是一个目录一样。路径可以使用 `~` 来引用用户的主目录。此设置可以与 `--include-directories` 命令行标志结合使用。
+  - **默认值：** `[]`
+  - **示例：**
+    ```json
+    "includeDirectories": [
+      "/path/to/another/project",
+      "../shared-library",
+      "~/common-utils"
+    ]
+    ```
+
+- **`loadMemoryFromIncludeDirectories`**（布尔值）：
+  - **描述：** 控制 `/memory refresh` 命令的行为。如果设置为 `true`，应从所有添加的目录加载 `GEMINI.md` 文件。如果设置为 `false`，`GEMINI.md` 应仅从当前目录加载。
   - **默认值：** `false`
   - **示例：**
     ```json
-    "hideBanner": true
+    "loadMemoryFromIncludeDirectories": true
     ```
 
 - **`chatCompression`**（对象）：
@@ -264,8 +319,16 @@ Gemini CLI 使用 `settings.json` 文件进行持久配置。这些文件有三�
   },
   "usageStatisticsEnabled": true,
   "hideTips": false,
+  "hideBanner": false,
   "maxSessionTurns": 10,
-  "hideBanner": false
+  "summarizeToolOutput": {
+    "run_shell_command": {
+      "tokenBudget": 100
+    }
+  },
+  "excludedProjectEnvVars": ["DEBUG", "DEBUG_MODE", "NODE_ENV"],
+  "includeDirectories": ["path/to/dir1", "~/path/to/dir2", "../path/to/dir3"],
+  "loadMemoryFromIncludeDirectories": true
 }
 ```
 
@@ -279,7 +342,7 @@ CLI 保留您运行的 shell 命令的历史记录。为了避免不同项目之
 
 ## 环境变量和 `.env` 文件
 
-环境变量是配置应用程序的常见方式，特别是对于 API 密钥等敏感信息或可能在环境之间变化的设置。
+环境变量是配置应用程序的常见方式，特别是对于 API 密钥等敏感信息或可能在环境之间变化的设置。有关身份验证设置，请参阅[身份验证文档](./authentication.md)，其中涵盖了所有可用的身份验证方法。
 
 CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
 
@@ -287,9 +350,11 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
 2. 如果未找到，它会在父目录中向上搜索，直到找到 `.env` 文件或到达项目根目录（由 `.git` 文件夹标识）或主目录。
 3. 如果仍未找到，它会查找 `~/.env`（在用户的主目录中）。
 
-- **`GEMINI_API_KEY`**（必需）：
+**环境变量排除：** 某些环境变量（如 `DEBUG` 和 `DEBUG_MODE`）会自动排除从项目 `.env` 文件加载，以防止干扰 gemini-cli 的行为。来自 `.gemini/.env` 文件的变量从不被排除。您可以使用 `settings.json` 文件中的 `excludedProjectEnvVars` 设置自定义此行为。
+
+- **`GEMINI_API_KEY`**：
   - 您的 Gemini API 的 API 密钥。
-  - **对操作至关重要。** 没有它，CLI 将无法运行。
+  - [几种可用身份验证方法](./authentication.md)之一。
   - 在您的 shell 配置文件（例如，`~/.bashrc`、`~/.zshrc`）或 `.env` 文件中设置。
 - **`GEMINI_MODEL`**：
   - 指定要使用的默认 Gemini 模型。
@@ -326,6 +391,7 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
   - `<profile_name>`：使用自定义配置文件。要定义自定义配置文件，请在项目的 `.gemini/` 目录中创建名为 `sandbox-macos-<profile_name>.sb` 的文件（例如，`my-project/.gemini/sandbox-macos-custom.sb`）。
 - **`DEBUG` 或 `DEBUG_MODE`**（通常由底层库或 CLI 本身使用）：
   - 设置为 `true` 或 `1` 以启用详细的调试日志记录，这有助于故障排除。
+  - **注意：** 这些变量默认自动从项目 `.env` 文件中排除，以防止干扰 gemini-cli 的行为。如果您需要为 gemini-cli 特别设置这些变量，请使用 `.gemini/.env` 文件。
 - **`NO_COLOR`**：
   - 设置为任何值以禁用 CLI 中的所有颜色输出。
 - **`CLI_TITLE`**：
@@ -343,6 +409,11 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
   - 示例：`npm start -- --model gemini-1.5-pro-latest`
 - **`--prompt <your_prompt>`**（**`-p <your_prompt>`**）：
   - 用于直接向命令传递提示。这会在非交互模式下调用 Gemini CLI。
+- **`--prompt-interactive <your_prompt>`**（**`-i <your_prompt>`**）：
+  - 使用提供的提示作为初始输入启动交互式会话。
+  - 提示在交互式会话内处理，而不是在会话之前。
+  - 不能在从 stdin 管道输入时使用。
+  - 示例：`gemini -i "解释这段代码"`
 - **`--sandbox`**（**`-s`**）：
   - 为此会话启用沙盒模式。
 - **`--sandbox-image`**：
@@ -372,14 +443,24 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
   - 设置遥测的 OTLP 端点。有关更多信息，请参阅[遥测](../telemetry.md)。
 - **`--telemetry-log-prompts`**：
   - 启用遥测的提示记录。有关更多信息，请参阅[遥测](../telemetry.md)。
+- **`--telemetry-otlp-protocol`**：
+  - 设置遥测的 OTLP 协议（`grpc` 或 `http`）。默认为 `grpc`。有关更多信息，请参阅[遥测](../telemetry.md)。
 - **`--checkpointing`**：
-  - 启用[检查点](./commands.md#checkpointing-commands)。
+  - 启用[检查点](../checkpointing.md)。
 - **`--extensions <extension_name ...>`**（**`-e <extension_name ...>`**）：
   - 指定会话要使用的扩展列表。如果未提供，则使用所有可用的扩展。
   - 使用特殊术语 `gemini -e none` 禁用所有扩展。
   - 示例：`gemini -e my-extension -e my-other-extension`
 - **`--list-extensions`**（**`-l`**）：
   - 列出所有可用的扩展并退出。
+- **`--proxy`**：
+  - 设置 CLI 的代理。
+  - 示例：`--proxy http://localhost:7890`。
+- **`--include-directories <dir1,dir2,...>`**：
+  - 在工作空间中包含其他目录以支持多目录。
+  - 可以多次指定或作为逗号分隔的值。
+  - 最多可以添加 5 个目录。
+  - 示例：`--include-directories /path/to/project1,/path/to/project2` 或 `--include-directories /path/to/project1 --include-directories /path/to/project2`
 - **`--version`**：
   - 显示 CLI 的版本。
 
@@ -401,7 +482,7 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
 - 生成新的 TypeScript 代码时，请遵循现有的编码风格。
 - 确保所有新函数和类都有 JSDoc 注释。
 - 在适当的地方优先使用函数式编程范式。
-- 所有代码应与 TypeScript 5.0 和 Node.js 18+ 兼容。
+- 所有代码应与 TypeScript 5.0 和 Node.js 20+ 兼容。
 
 ## 编码风格：
 
@@ -432,9 +513,10 @@ CLI 会自动从 `.env` 文件加载环境变量。加载顺序是：
      - 位置：CLI 在当前工作目录中搜索配置的上下文文件，然后在每个父目录中搜索，直到项目根目录（由 `.git` 文件夹标识）或您的主目录。
      - 作用域：提供与整个项目或项目的重要部分相关的上下文。
   3. **子目录上下文文件（上下文/本地）：**
-     - 位置：CLI 还在当前工作目录 _下面_ 的子目录中扫描配置的上下文文件（遵守常见的忽略模式，如 `node_modules`、`.git` 等）。
+     - 位置：CLI 还在当前工作目录 _下面_ 的子目录中扫描配置的上下文文件（遵守常见的忽略模式，如 `node_modules`、`.git` 等）。搜索的广度默认限制为 200 个目录，但可以使用 `settings.json` 文件中的 `memoryDiscoveryMaxDirs` 字段进行配置。
      - 作用域：允许与项目的特定组件、模块或子部分相关的高度特定指令。
 - **连接和 UI 指示：** 所有找到的上下文文件的内容都会连接（带有指示其来源和路径的分隔符）并作为系统提示的一部分提供给 Gemini 模型。CLI 页脚显示已加载上下文文件的计数，为您提供关于活动指令上下文的快速视觉提示。
+- **导入内容：** 您可以通过使用 `@path/to/file.md` 语法导入其他 Markdown 文件来模块化您的上下文文件。有关更多详细信息，请参阅[Memory Import Processor 文档](../core/memport.md)。
 - **记忆管理命令：**
   - 使用 `/memory refresh` 强制重新扫描和重新加载所有配置位置的所有上下文文件。这会更新 AI 的指令上下文。
   - 使用 `/memory show` 显示当前加载的组合指令上下文，允许您验证 AI 使用的层次结构和内容。

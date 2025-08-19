@@ -4,6 +4,36 @@
 
 ## 更新历史
 
+### 2025-08-19 更新
+- **提交范围**: 0215811c..ec0d9f4f  
+- **新增提交数**: 18
+- **版本**: v0.1.22
+
+### 2025-08-18 更新
+- **提交范围**: 2998f27f..065eb789
+- **新增提交数**: 4
+- **版本**: v0.1.22-dev
+
+### 2025-08-17 更新  
+- **提交范围**: 5aadb02a..ec1fa954
+- **新增提交数**: 3
+- **版本**: v0.1.22-dev
+
+### 2025-08-16 更新
+- **提交范围**: ab1c483c..bc60257e
+- **新增提交数**: 16
+- **版本**: v0.1.22-dev
+
+### 2025-08-15 更新
+- **提交范围**: 8bebaeda..72195d55
+- **新增提交数**: 33
+- **版本**: v0.1.21
+
+### 2025-08-14 更新
+- **提交范围**: f81ccd8d..d6403c67
+- **新增提交数**: 26
+- **版本**: v0.1.21-dev
+
 ### 2025-08-13 更新
 - **提交范围**: 9d023be1..4074e8e6
 - **新增提交数**: 1
@@ -253,32 +283,38 @@
 - **提交范围**: 05b9b9ab..c55b15f7
 - **总提交数**: 30
 
-## 最新更改（2025-08-13）
+## 最新更改（2025-08-19）
 
 ### 🚀 重大版本发布
-- **[#4074e8e6](https://github.com/google-gemini/gemini-cli/commit/4074e8e6)** - 🎉 **发布 v0.1.20** - 修复 CI 工作流的 YAML 格式问题
-- **[#4ecfb478](https://github.com/google-gemini/gemini-cli/commit/4ecfb478)** - 🎉 **发布 v0.1.19** - 包含 VS Code IDE 集成、集成测试升级和批准模式
-- **[#3a87712c](https://github.com/google-gemini/gemini-cli/commit/3a87712c)** - 🚀 **VS Code IDE 集成启动** - 正式推出 VS Code IDE 集成功能
+- **[#fde5511c](https://github.com/google-gemini/gemini-cli/commit/fde5511c)** - 🎉 **发布 v0.1.22** - 消息队列、会话记录服务和 Zed 集成
+- **[#发布21相关](https://github.com/google-gemini/gemini-cli/commit/)** - 🎉 **发布 v0.1.21** - 工具架构升级和遥测增强
+- **[#fb3ceb0d](https://github.com/google-gemini/gemini-cli/commit/fb3ceb0d)** - 🏢 **Zed 编辑器集成** - 通过 Zed 读写文件，支持多文件夹工作空间
 
-### ⚙️ 批准模式和用户控制
-- **[#6024](https://github.com/google-gemini/gemini-cli/pull/6024)** - 🎛️ **批准模式参数** - 添加 --approval-mode 参数，提供 default、auto_edit、yolo 三种模式
-- **[#5838](https://github.com/google-gemini/gemini-cli/pull/5838)** - ⌨️ **单次 Ctrl+C 取消** - 支持单次 Ctrl+C 取消流式传输，保留双次 Ctrl+C 退出
+### 💾 会话和数据管理
+- **[#36ea986c](https://github.com/google-gemini/gemini-cli/commit/36ea986c)** - 💾 **自动会话记录** - 引入核心 ChatRecordingService 实现自动对话保存
+- **[#fde5511c](https://github.com/google-gemini/gemini-cli/commit/fde5511c)** - 📝 **消息队列实现** - 在流式响应期间实现消息队列功能
+- **[#8f8082fe](https://github.com/google-gemini/gemini-cli/commit/8f8082fe)** - 📊 **文件变更跟踪** - 为会话指标添加文件变更跟踪
 
-### 🧪 测试和工具链升级
-- **[#6021](https://github.com/google-gemini/gemini-cli/pull/6021)** - 🔬 **集成测试升级到 Vitest** - 将集成测试从旧框架升级到 Vitest
-- **[#5645](https://github.com/google-gemini/gemini-cli/pull/5645)** - 📝 **集成测试重构为 TypeScript** - 将集成测试重构为 TypeScript 以提高类型安全
+### 🛡️ 隐私和安全增强
+- **[#ec0d9f4f](https://github.com/google-gemini/gemini-cli/commit/ec0d9f4f)** - 🛡️ **隐私设置钩子** - 添加隐私设置钩子和测试
+- **[#6fc68ff8](https://github.com/google-gemini/gemini-cli/commit/6fc68ff8)** - 🔒 **特殊字符处理** - 处理 glob 和 read_many_files 文件路径中的特殊字符
+- **[#da396bd5](https://github.com/google-gemini/gemini-cli/commit/da396bd5)** - 🎨 **主题行为修复** - 确保本地和 CI 测试运行的一致主题行为
 
-### 🎨 用户界面和体验改进  
-- **[#4738](https://github.com/google-gemini/gemini-cli/pull/4738)** - ⚙️ **设置命令和 UI 面板** - 添加 /settings 命令和设置界面
-- **[#4453](https://github.com/google-gemini/gemini-cli/pull/4453)** - ⌨️ **双 ESC 清除输入增强** - 改进输入 UX，支持双 ESC 清除
-- **[#5666](https://github.com/google-gemini/gemini-cli/pull/5666)** - 💡 **换行快捷键幽默提示** - 为 Gemini CLI 中的换行快捷键添加幽默提示
-- **[#5651](https://github.com/google-gemini/gemini-cli/pull/5651)** - 📱 **窄终端 UI 布局适应** - 改进 UI 布局以适应窄终端
+### 📊 遥测和监控改进
+- **[#58c29256](https://github.com/google-gemini/gemini-cli/commit/58c29256)** - 📊 **遥测增强** - 添加 tool_type 作为维度
+- **[#91cd0db2](https://github.com/google-gemini/gemini-cli/commit/91cd0db2)** - 📈 **会话事件记录** - 通过遥测记录器记录会话开始事件
+- **[#71f706cf](https://github.com/google-gemini/gemini-cli/commit/71f706cf)** - 🗜️ **压缩遥测** - 压缩聊天上下文时记录遥测
 
-### 🔧 核心功能和工具改进
-- **[#5884](https://github.com/google-gemini/gemini-cli/pull/5884)** - 🔗 **键盘绑定集中化** - 移除重复绑定并添加完整导航命令
-- **[#5686](https://github.com/google-gemini/gemini-cli/pull/5686)** - ✅ **聊天保存覆写确认** - 为 `/chat save` 添加覆写确认对话框
-- **[#5866](https://github.com/google-gemini/gemini-cli/pull/5866)** - 🧹 **移除过时的 CLI 选项** - 从 CLI 参数中移除 load-memory-from-include-directories 选项
-- **[#5857](https://github.com/google-gemini/gemini-cli/pull/5857)** - 🔢 **代码块行号选项** - 添加隐藏代码块行号的选项
+### ⚙️ 设置和配置管理
+- **[#e290a61a](https://github.com/google-gemini/gemini-cli/commit/e290a61a)** - ⚙️ **设置优化** - 禁用对话框中的统计显示
+- **[#92bb4624](https://github.com/google-gemini/gemini-cli/commit/92bb4624)** - 🔧 **设置管理** - 增强通用设置器和显示助手
+- **[#465ac9f5](https://github.com/google-gemini/gemini-cli/commit/465ac9f5)** - ⚡ **非递归文件搜索** - 引入非递归文件搜索策略
+
+### 🔧 工具验证和架构改进
+- **[#d66ddcd8](https://github.com/google-gemini/gemini-cli/commit/d66ddcd8)** - 🛠️ **工具验证优化** - 在非交互式工具执行器中不抛出验证错误
+- **[#3960ccf7](https://github.com/google-gemini/gemini-cli/commit/3960ccf7)** - 📡 **MCP 增强** - 添加 MCP Root 变更通知
+- **[#4394b6ab](https://github.com/google-gemini/gemini-cli/commit/4394b6ab)** - 📝 **文档更新** - 更新身份验证文档以反映可用选项
+- **[#5fe4e023](https://github.com/google-gemini/gemini-cli/commit/5fe4e023)** - 🔐 **GCA 凭据** - 修复 GCA 凭据加载顺序
 
 ### 🏢 IDE 集成和开发工具
 - **[#5856](https://github.com/google-gemini/gemini-cli/pull/5856)** - 🌟 **MCP Roots 支持** - 添加 MCP Roots 支持

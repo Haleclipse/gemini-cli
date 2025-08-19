@@ -31,32 +31,32 @@ features:
 ## 🔄 Latest Upstream Updates
 
 ::: info Version Status
-- **Current Version**: v0.1.20
+- **Current Version**: v0.1.22
 - **Fork Status**: Synced to latest ✅
 - **Documentation**: Fully synced with bilingual support
 :::
 
-### Recent Sync (2025-08-13)
+### Recent Sync (2025-08-19)
 
-Merged **44 new commits** from upstream with VS Code IDE integration, approval modes and testing upgrades:
+Merged **107 new commits** from upstream with message queuing, chat recording and Zed integration:
 
 #### 🚀 Major Feature Updates
-- 🎉 **Release v0.1.20**: Fixed CI workflow YAML format issues
-- 🎉 **Release v0.1.19**: Contains VS Code IDE integration, testing upgrades and approval modes
-- 🚀 **VS Code IDE Integration Launch**: Officially launched VS Code IDE integration functionality
-- 🏛️ **Approval Mode Parameter**: Added --approval-mode parameter with default, auto_edit, yolo modes
-- ⌨️ **Single Ctrl+C Cancel**: Support single Ctrl+C to cancel streaming while preserving double Ctrl+C exit
-- 🔬 **Integration Tests Upgrade to Vitest**: Upgraded integration tests from legacy framework to Vitest
+- 🎉 **Release v0.1.22**: Contains message queuing, chat recording service and Zed integration
+- 🎉 **Release v0.1.21**: Contains tool architecture upgrades and telemetry enhancements
+- 📝 **Message Queuing Implementation**: Implement message queuing during streaming responses
+- 💾 **Automatic Chat Recording**: Introduce core chat recording service for automatic conversation saving
+- 🏢 **Zed Editor Integration**: Read and write files through Zed with multi-folder workspace support
+- 🔧 **Tool Architecture Modernization**: Large-scale migration of tools to declarative mode
 
 #### 🔧 New Features and Improvements
-- 📝 **Integration Tests Refactored to TypeScript**: Refactored integration tests to TypeScript for improved type safety
-- 🏢 **IDE Integration Improvements**: Updated installation logic, workspace path handling and sandbox detection
-- 📚 **GitHub Documentation Pages**: Created documentation pages based on GitHub documentation
-- 🔄 **Input Processing Upgrade**: Switched from useInput to useKeypress
-- 🧹 **CI Workflow Security**: Ensured CI workflow consistency and prevented injection attacks
-- ⚡ **Performance Improvements**: Added --experimental-cli to accelerate prettier formatting
-- 📊 **Telemetry Enhancements**: Improved Clearcut logging and error status code recording
-- 🔧 **Tool Architecture Upgrades**: Migrated tools to use parametersJsonSchema and responseJsonSchema
+- 🛡️ **Privacy Settings Hook**: Add privacy settings hook and tests
+- 📊 **File Change Tracking**: Add file change tracking to session metrics
+- 🔒 **Special Character Handling**: Handle special characters in file paths
+- 🌐 **OAuth Enhancements**: Support GitHub OAuth and resource parameters
+- ⚡ **Non-recursive File Search**: Introduce non-recursive file search strategy
+- 🔧 **Terminal Settings Command**: Add terminal settings for Shift+Enter and Ctrl+Enter support
+- 📱 **Folder Trust Management**: Support trustedFolders.json configuration file
+- 🎨 **UI Improvements**: Fix theme behavior, input handling and diff display
 
 #### 🔧 Tools and Improvements
 - 📦 **Google/genai v1.9.0**: Updated to latest version with parametersJsonSchema support
