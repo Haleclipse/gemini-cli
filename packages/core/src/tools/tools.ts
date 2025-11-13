@@ -4,9 +4,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { FunctionDeclaration, PartListUnion } from '@google/genai';
+import type { FunctionDeclaration, PartListUnion } from '@google/genai';
 import { ToolErrorType } from './tool-error.js';
-import { DiffUpdateResult } from '../ide/ideContext.js';
+import type { DiffUpdateResult } from '../ide/ide-client.js';
+import type { ShellExecutionConfig } from '../services/shellExecutionService.js';
+import { SchemaValidator } from '../utils/schemaValidator.js';
+import type { AnsiOutput } from '../utils/terminalSerializer.js';
+import type { MessageBus } from '../confirmation-bus/message-bus.js';
+import { randomUUID } from 'node:crypto';
+import {
+  MessageBusType,
+  type ToolConfirmationRequest,
+  type ToolConfirmationResponse,
+} from '../confirmation-bus/types.js';
 
 /**
  * Represents a validated and ready-to-execute tool call.
@@ -23,6 +33,7 @@ export interface ToolInvocation<
 
   /**
    * Gets a pre-execution description of the tool operation.
+   *
    * @returns A markdown string describing what the tool will do.
    */
   getDescription(): string;
@@ -49,7 +60,8 @@ export interface ToolInvocation<
    */
   execute(
     signal: AbortSignal,
-    updateOutput?: (output: string) => void,
+    updateOutput?: (output: string | AnsiOutput) => void,
+    shellExecutionConfig?: ShellExecutionConfig,
   ): Promise<TResult>;
 }
 
@@ -61,7 +73,13 @@ export abstract class BaseToolInvocation<
   TResult extends ToolResult,
 > implements ToolInvocation<TParams, TResult>
 {
-  constructor(readonly params: TParams) {}
+  constructor(
+    readonly params: TParams,
+    protected readonly messageBus?: MessageBus,
+    readonly _toolName?: string,
+    readonly _toolDisplayName?: string,
+    readonly _serverName?: string,
+  ) {}
 
   abstract getDescription(): string;
 
@@ -69,15 +87,151 @@ export abstract class BaseToolInvocation<
     return [];
   }
 
-  shouldConfirmExecute(
+  async shouldConfirmExecute(
+    abortSignal: AbortSignal,
+  ): Promise<ToolCallConfirmationDetails | false> {
+    if (this.messageBus) {
+      const decision = await this.getMessageBusDecision(abortSignal);
+      if (decision === 'ALLOW') {
+        return false;
+      }
+
+      if (decision === 'DENY') {
+        throw new Error(
+          `Tool execution for "${
+            this._toolDisplayName || this._toolName
+          }" denied by policy.`,
+        );
+      }
+
+      if (decision === 'ASK_USER') {
+        return this.getConfirmationDetails(abortSignal);
+      }
+    }
+    // When no message bus, use default confirmation flow
+    return this.getConfirmationDetails(abortSignal);
+  }
+
+  /**
+   * Subclasses should override this method to provide custom confirmation UI
+   * when the policy engine's decision is 'ASK_USER'.
+   * The base implementation provides a generic confirmation prompt.
+   */
+  protected async getConfirmationDetails(
     _abortSignal: AbortSignal,
   ): Promise<ToolCallConfirmationDetails | false> {
-    return Promise.resolve(false);
+    if (!this.messageBus) {
+      return false;
+    }
+
+    const confirmationDetails: ToolCallConfirmationDetails = {
+      type: 'info',
+      title: `Confirm: ${this._toolDisplayName || this._toolName}`,
+      prompt: this.getDescription(),
+      onConfirm: async (outcome: ToolConfirmationOutcome) => {
+        if (outcome === ToolConfirmationOutcome.ProceedAlways) {
+          if (this.messageBus && this._toolName) {
+            this.messageBus.publish({
+              type: MessageBusType.UPDATE_POLICY,
+              toolName: this._toolName,
+            });
+          }
+        }
+      },
+    };
+    return confirmationDetails;
+  }
+
+  protected getMessageBusDecision(
+    abortSignal: AbortSignal,
+  ): Promise<'ALLOW' | 'DENY' | 'ASK_USER'> {
+    if (!this.messageBus) {
+      // If there's no message bus, we can't make a decision, so we allow.
+      // The legacy confirmation flow will still apply if the tool needs it.
+      return Promise.resolve('ALLOW');
+    }
+
+    const correlationId = randomUUID();
+    const toolCall = {
+      name: this._toolName || this.constructor.name,
+      args: this.params as Record<string, unknown>,
+    };
+
+    return new Promise<'ALLOW' | 'DENY' | 'ASK_USER'>((resolve) => {
+      if (!this.messageBus) {
+        resolve('ALLOW');
+        return;
+      }
+
+      let timeoutId: NodeJS.Timeout | undefined;
+
+      const cleanup = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+          timeoutId = undefined;
+        }
+        abortSignal.removeEventListener('abort', abortHandler);
+        this.messageBus?.unsubscribe(
+          MessageBusType.TOOL_CONFIRMATION_RESPONSE,
+          responseHandler,
+        );
+      };
+
+      const abortHandler = () => {
+        cleanup();
+        resolve('DENY');
+      };
+
+      if (abortSignal.aborted) {
+        resolve('DENY');
+        return;
+      }
+
+      const responseHandler = (response: ToolConfirmationResponse) => {
+        if (response.correlationId === correlationId) {
+          cleanup();
+          if (response.requiresUserConfirmation) {
+            resolve('ASK_USER');
+          } else if (response.confirmed) {
+            resolve('ALLOW');
+          } else {
+            resolve('DENY');
+          }
+        }
+      };
+
+      abortSignal.addEventListener('abort', abortHandler);
+
+      timeoutId = setTimeout(() => {
+        cleanup();
+        resolve('ASK_USER'); // Default to ASK_USER on timeout
+      }, 30000);
+
+      this.messageBus.subscribe(
+        MessageBusType.TOOL_CONFIRMATION_RESPONSE,
+        responseHandler,
+      );
+
+      const request: ToolConfirmationRequest = {
+        type: MessageBusType.TOOL_CONFIRMATION_REQUEST,
+        toolCall,
+        correlationId,
+        serverName: this._serverName,
+      };
+
+      try {
+        this.messageBus.publish(request);
+      } catch (_error) {
+        cleanup();
+        resolve('ALLOW');
+      }
+    });
   }
 
   abstract execute(
     signal: AbortSignal,
-    updateOutput?: (output: string) => void,
+    updateOutput?: (output: string | AnsiOutput) => void,
+    shellExecutionConfig?: ShellExecutionConfig,
   ): Promise<TResult>;
 }
 
@@ -153,6 +307,9 @@ export abstract class DeclarativeTool<
     readonly parameterSchema: unknown,
     readonly isOutputMarkdown: boolean = true,
     readonly canUpdateOutput: boolean = false,
+    readonly messageBus?: MessageBus,
+    readonly extensionName?: string,
+    readonly extensionId?: string,
   ) {}
 
   get schema(): FunctionDeclaration {
@@ -170,7 +327,7 @@ export abstract class DeclarativeTool<
    * @param params The raw parameters from the model.
    * @returns An error message string if invalid, null otherwise.
    */
-  protected validateToolParams(_params: TParams): string | null {
+  validateToolParams(_params: TParams): string | null {
     // Base implementation can be extended by subclasses.
     return null;
   }
@@ -195,10 +352,11 @@ export abstract class DeclarativeTool<
   async buildAndExecute(
     params: TParams,
     signal: AbortSignal,
-    updateOutput?: (output: string) => void,
+    updateOutput?: (output: string | AnsiOutput) => void,
+    shellExecutionConfig?: ShellExecutionConfig,
   ): Promise<TResult> {
     const invocation = this.build(params);
-    return invocation.execute(signal, updateOutput);
+    return invocation.execute(signal, updateOutput, shellExecutionConfig);
   }
 
   /**
@@ -275,11 +433,36 @@ export abstract class BaseDeclarativeTool<
     if (validationError) {
       throw new Error(validationError);
     }
-    return this.createInvocation(params);
+    return this.createInvocation(
+      params,
+      this.messageBus,
+      this.name,
+      this.displayName,
+    );
+  }
+
+  override validateToolParams(params: TParams): string | null {
+    const errors = SchemaValidator.validate(
+      this.schema.parametersJsonSchema,
+      params,
+    );
+
+    if (errors) {
+      return errors;
+    }
+    return this.validateToolParamValues(params);
+  }
+
+  protected validateToolParamValues(_params: TParams): string | null {
+    // Base implementation can be extended by subclasses.
+    return null;
   }
 
   protected abstract createInvocation(
     params: TParams,
+    messageBus?: MessageBus,
+    _toolName?: string,
+    _toolDisplayName?: string,
   ): ToolInvocation<TParams, TResult>;
 }
 
@@ -288,12 +471,22 @@ export abstract class BaseDeclarativeTool<
  */
 export type AnyDeclarativeTool = DeclarativeTool<object, ToolResult>;
 
+/**
+ * Type guard to check if an object is a Tool.
+ * @param obj The object to check.
+ * @returns True if the object is a Tool, false otherwise.
+ */
+export function isTool(obj: unknown): obj is AnyDeclarativeTool {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    'name' in obj &&
+    'build' in obj &&
+    typeof (obj as AnyDeclarativeTool).build === 'function'
+  );
+}
+
 export interface ToolResult {
-  /**
-   * A short, one-line summary of the tool's action and result.
-   * e.g., "Read 5 files", "Wrote 256 bytes to foo.txt"
-   */
-  summary?: string;
   /**
    * Content meant to be included in LLM history.
    * This should represent the factual outcome of the tool execution.
@@ -363,7 +556,7 @@ export function hasCycleInSchema(schema: object): boolean {
 
     if ('$ref' in node && typeof node.$ref === 'string') {
       const ref = node.$ref;
-      if (ref === '#/' || pathRefs.has(ref)) {
+      if (ref === '#' || ref === '#/' || pathRefs.has(ref)) {
         // A ref to just '#/' is always a cycle.
         return true; // Cycle detected!
       }
@@ -403,7 +596,18 @@ export function hasCycleInSchema(schema: object): boolean {
   return traverse(schema, new Set<string>(), new Set<string>());
 }
 
-export type ToolResultDisplay = string | FileDiff;
+export interface TodoList {
+  todos: Todo[];
+}
+
+export type ToolResultDisplay = string | FileDiff | AnsiOutput | TodoList;
+
+export type TodoStatus = 'pending' | 'in_progress' | 'completed' | 'cancelled';
+
+export interface Todo {
+  description: string;
+  status: TodoStatus;
+}
 
 export interface FileDiff {
   fileDiff: string;
@@ -414,10 +618,14 @@ export interface FileDiff {
 }
 
 export interface DiffStat {
-  ai_removed_lines: number;
-  ai_added_lines: number;
+  model_added_lines: number;
+  model_removed_lines: number;
+  model_added_chars: number;
+  model_removed_chars: number;
   user_added_lines: number;
   user_removed_lines: number;
+  user_added_chars: number;
+  user_removed_chars: number;
 }
 
 export interface ToolEditConfirmationDetails {
@@ -493,6 +701,14 @@ export enum Kind {
   Fetch = 'fetch',
   Other = 'other',
 }
+
+// Function kinds that have side effects
+export const MUTATOR_KINDS: Kind[] = [
+  Kind.Edit,
+  Kind.Delete,
+  Kind.Move,
+  Kind.Execute,
+] as const;
 
 export interface ToolLocation {
   // Absolute path to the file

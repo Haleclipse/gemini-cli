@@ -1,8 +1,8 @@
 name: 'Bug Report'
 description: 'Report a bug to help us improve Gemini CLI'
 labels:
-  - 'kind/bug'
   - 'status/need-triage'
+type: 'Bug'
 body:
   - type: 'markdown'
     attributes:
@@ -34,9 +34,12 @@ body:
       description: 'Please paste the full text from the `/about` command run from Gemini CLI. Also include which platform (macOS, Windows, Linux).'
       value: |-
         <details>
+        <summary>Client Information</summary>
+
+        Run `gemini` to enter the interactive CLI, then run the `/about` command.
 
         ```console
-        $ gemini /about
+        > /about
         # paste output here
         ```
 

@@ -4,17 +4,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  BaseDeclarativeTool,
-  BaseToolInvocation,
-  Kind,
+import { safeJsonStringify } from '../utils/safeJsonStringify.js';
+import type {
   ToolCallConfirmationDetails,
-  ToolConfirmationOutcome,
   ToolInvocation,
   ToolMcpConfirmationDetails,
   ToolResult,
 } from './tools.js';
-import { CallableTool, FunctionCall, Part } from '@google/genai';
+import {
+  BaseDeclarativeTool,
+  BaseToolInvocation,
+  Kind,
+  ToolConfirmationOutcome,
+} from './tools.js';
+import type { CallableTool, FunctionCall, Part } from '@google/genai';
+import { ToolErrorType } from './tool-error.js';
+import type { Config } from '../config/config.js';
+import type { MessageBus } from '../confirmation-bus/message-bus.js';
 
 type ToolParams = Record<string, unknown>;
 
@@ -63,20 +69,31 @@ class DiscoveredMCPToolInvocation extends BaseToolInvocation<
     readonly serverName: string,
     readonly serverToolName: string,
     readonly displayName: string,
-    readonly timeout?: number,
     readonly trust?: boolean,
     params: ToolParams = {},
+    private readonly cliConfig?: Config,
+    messageBus?: MessageBus,
   ) {
-    super(params);
+    // Use composite format for policy checks: serverName__toolName
+    // This enables server wildcards (e.g., "google-workspace__*")
+    // while still allowing specific tool rules
+
+    super(
+      params,
+      messageBus,
+      `${serverName}__${serverToolName}`,
+      displayName,
+      serverName,
+    );
   }
 
-  override async shouldConfirmExecute(
+  protected override async getConfirmationDetails(
     _abortSignal: AbortSignal,
   ): Promise<ToolCallConfirmationDetails | false> {
     const serverAllowListKey = this.serverName;
     const toolAllowListKey = `${this.serverName}.${this.serverToolName}`;
 
-    if (this.trust) {
+    if (this.cliConfig?.isTrustedFolder() && this.trust) {
       return false; // server is trusted, no confirmation needed
     }
 
@@ -126,7 +143,7 @@ class DiscoveredMCPToolInvocation extends BaseToolInvocation<
     return false;
   }
 
-  async execute(): Promise<ToolResult> {
+  async execute(signal: AbortSignal): Promise<ToolResult> {
     const functionCalls: FunctionCall[] = [
       {
         name: this.serverToolName,
@@ -134,13 +151,52 @@ class DiscoveredMCPToolInvocation extends BaseToolInvocation<
       },
     ];
 
-    const rawResponseParts = await this.mcpTool.callTool(functionCalls);
+    // Race MCP tool call with abort signal to respect cancellation
+    const rawResponseParts = await new Promise<Part[]>((resolve, reject) => {
+      if (signal.aborted) {
+        const error = new Error('Tool call aborted');
+        error.name = 'AbortError';
+        reject(error);
+        return;
+      }
+      const onAbort = () => {
+        cleanup();
+        const error = new Error('Tool call aborted');
+        error.name = 'AbortError';
+        reject(error);
+      };
+      const cleanup = () => {
+        signal.removeEventListener('abort', onAbort);
+      };
+      signal.addEventListener('abort', onAbort, { once: true });
+
+      this.mcpTool
+        .callTool(functionCalls)
+        .then((res) => {
+          cleanup();
+          resolve(res);
+        })
+        .catch((err) => {
+          cleanup();
+          reject(err);
+        });
+    });
 
     // Ensure the response is not an error
     if (this.isMCPToolError(rawResponseParts)) {
-      throw new Error(
-        `MCP tool '${this.serverToolName}' reported tool error with response: ${JSON.stringify(rawResponseParts)}`,
-      );
+      const errorMessage = `MCP tool '${
+        this.serverToolName
+      }' reported tool error for function call: ${safeJsonStringify(
+        functionCalls[0],
+      )} with response: ${safeJsonStringify(rawResponseParts)}`;
+      return {
+        llmContent: errorMessage,
+        returnDisplay: `Error: MCP tool '${this.serverToolName}' reported an error.`,
+        error: {
+          message: errorMessage,
+          type: ToolErrorType.MCP_TOOL_ERROR,
+        },
+      };
     }
 
     const transformedParts = transformMcpContentToParts(rawResponseParts);
@@ -152,7 +208,7 @@ class DiscoveredMCPToolInvocation extends BaseToolInvocation<
   }
 
   getDescription(): string {
-    return this.displayName;
+    return safeJsonStringify(this.params);
   }
 }
 
@@ -166,9 +222,12 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<
     readonly serverToolName: string,
     description: string,
     override readonly parameterSchema: unknown,
-    readonly timeout?: number,
     readonly trust?: boolean,
     nameOverride?: string,
+    private readonly cliConfig?: Config,
+    override readonly extensionName?: string,
+    override readonly extensionId?: string,
+    messageBus?: MessageBus,
   ) {
     super(
       nameOverride ?? generateValidName(serverToolName),
@@ -177,8 +236,15 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<
       Kind.Other,
       parameterSchema,
       true, // isOutputMarkdown
-      false, // canUpdateOutput
+      false, // canUpdateOutput,
+      messageBus,
+      extensionName,
+      extensionId,
     );
+  }
+
+  getFullyQualifiedPrefix(): string {
+    return `${this.serverName}__`;
   }
 
   asFullyQualifiedTool(): DiscoveredMCPTool {
@@ -188,23 +254,30 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<
       this.serverToolName,
       this.description,
       this.parameterSchema,
-      this.timeout,
       this.trust,
-      `${this.serverName}__${this.serverToolName}`,
+      `${this.getFullyQualifiedPrefix()}${this.serverToolName}`,
+      this.cliConfig,
+      this.extensionName,
+      this.extensionId,
+      this.messageBus,
     );
   }
 
   protected createInvocation(
     params: ToolParams,
+    _messageBus?: MessageBus,
+    _toolName?: string,
+    _displayName?: string,
   ): ToolInvocation<ToolParams, ToolResult> {
     return new DiscoveredMCPToolInvocation(
       this.mcpTool,
       this.serverName,
       this.serverToolName,
       this.displayName,
-      this.timeout,
       this.trust,
       params,
+      this.cliConfig,
+      _messageBus,
     );
   }
 }

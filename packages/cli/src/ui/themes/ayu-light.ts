@@ -5,7 +5,7 @@
  */
 
 import { type ColorsTheme, Theme } from './theme.js';
-import { lightSemanticColors } from './semantic-tokens.js';
+import { interpolateColor } from './color-utils.js';
 
 const ayuLightColors: ColorsTheme = {
   type: 'light',
@@ -22,6 +22,7 @@ const ayuLightColors: ColorsTheme = {
   DiffRemoved: '#FFCCCC',
   Comment: '#ABADB1',
   Gray: '#a6aaaf',
+  DarkGray: interpolateColor('#a6aaaf', '#f8f9fa', 0.5),
   GradientColors: ['#399ee6', '#86b300'],
 };
 
@@ -135,5 +136,4 @@ export const AyuLight: Theme = new Theme(
     },
   },
   ayuLightColors,
-  lightSemanticColors,
 );

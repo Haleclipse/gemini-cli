@@ -4,19 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { GroundingMetadata } from '@google/genai';
-import {
-  BaseDeclarativeTool,
-  BaseToolInvocation,
-  Kind,
-  ToolInvocation,
-  ToolResult,
-} from './tools.js';
-import { SchemaValidator } from '../utils/schemaValidator.js';
+import type { MessageBus } from '../confirmation-bus/message-bus.js';
+import { WEB_SEARCH_TOOL_NAME } from './tool-names.js';
+import type { GroundingMetadata } from '@google/genai';
+import type { ToolInvocation, ToolResult } from './tools.js';
+import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
+import { ToolErrorType } from './tool-error.js';
 
 import { getErrorMessage } from '../utils/errors.js';
-import { Config } from '../config/config.js';
-import { getResponseText } from '../utils/generateContentResponseUtilities.js';
+import { type Config } from '../config/config.js';
+import { getResponseText } from '../utils/partUtils.js';
 
 interface GroundingChunkWeb {
   uri?: string;
@@ -67,8 +64,11 @@ class WebSearchToolInvocation extends BaseToolInvocation<
   constructor(
     private readonly config: Config,
     params: WebSearchToolParams,
+    messageBus?: MessageBus,
+    _toolName?: string,
+    _toolDisplayName?: string,
   ) {
-    super(params);
+    super(params, messageBus, _toolName, _toolDisplayName);
   }
 
   override getDescription(): string {
@@ -80,8 +80,8 @@ class WebSearchToolInvocation extends BaseToolInvocation<
 
     try {
       const response = await geminiClient.generateContent(
+        { model: 'web-search' },
         [{ role: 'user', parts: [{ text: this.params.query }] }],
-        { tools: [{ googleSearch: {} }] },
         signal,
       );
 
@@ -128,11 +128,28 @@ class WebSearchToolInvocation extends BaseToolInvocation<
           // Sort insertions by index in descending order to avoid shifting subsequent indices
           insertions.sort((a, b) => b.index - a.index);
 
-          const responseChars = modifiedResponseText.split(''); // Use new variable
-          insertions.forEach((insertion) => {
-            responseChars.splice(insertion.index, 0, insertion.marker);
-          });
-          modifiedResponseText = responseChars.join(''); // Assign back to modifiedResponseText
+          // Use TextEncoder/TextDecoder since segment indices are UTF-8 byte positions
+          const encoder = new TextEncoder();
+          const responseBytes = encoder.encode(modifiedResponseText);
+          const parts: Uint8Array[] = [];
+          let lastIndex = responseBytes.length;
+          for (const ins of insertions) {
+            const pos = Math.min(ins.index, lastIndex);
+            parts.unshift(responseBytes.subarray(pos, lastIndex));
+            parts.unshift(encoder.encode(ins.marker));
+            lastIndex = pos;
+          }
+          parts.unshift(responseBytes.subarray(0, lastIndex));
+
+          // Concatenate all parts into a single buffer
+          const totalLength = parts.reduce((sum, part) => sum + part.length, 0);
+          const finalBytes = new Uint8Array(totalLength);
+          let offset = 0;
+          for (const part of parts) {
+            finalBytes.set(part, offset);
+            offset += part.length;
+          }
+          modifiedResponseText = new TextDecoder().decode(finalBytes);
         }
 
         if (sourceListFormatted.length > 0) {
@@ -154,6 +171,10 @@ class WebSearchToolInvocation extends BaseToolInvocation<
       return {
         llmContent: `Error: ${errorMessage}`,
         returnDisplay: `Error performing web search.`,
+        error: {
+          message: errorMessage,
+          type: ToolErrorType.WEB_SEARCH_FAILED,
+        },
       };
     }
   }
@@ -166,9 +187,12 @@ export class WebSearchTool extends BaseDeclarativeTool<
   WebSearchToolParams,
   WebSearchToolResult
 > {
-  static readonly Name: string = 'google_web_search';
+  static readonly Name = WEB_SEARCH_TOOL_NAME;
 
-  constructor(private readonly config: Config) {
+  constructor(
+    private readonly config: Config,
+    messageBus?: MessageBus,
+  ) {
     super(
       WebSearchTool.Name,
       'GoogleSearch',
@@ -184,6 +208,9 @@ export class WebSearchTool extends BaseDeclarativeTool<
         },
         required: ['query'],
       },
+      true, // isOutputMarkdown
+      false, // canUpdateOutput
+      messageBus,
     );
   }
 
@@ -192,17 +219,9 @@ export class WebSearchTool extends BaseDeclarativeTool<
    * @param params The parameters to validate
    * @returns An error message string if validation fails, null if valid
    */
-  protected override validateToolParams(
+  protected override validateToolParamValues(
     params: WebSearchToolParams,
   ): string | null {
-    const errors = SchemaValidator.validate(
-      this.schema.parametersJsonSchema,
-      params,
-    );
-    if (errors) {
-      return errors;
-    }
-
     if (!params.query || params.query.trim() === '') {
       return "The 'query' parameter cannot be empty.";
     }
@@ -211,7 +230,16 @@ export class WebSearchTool extends BaseDeclarativeTool<
 
   protected createInvocation(
     params: WebSearchToolParams,
+    messageBus?: MessageBus,
+    _toolName?: string,
+    _toolDisplayName?: string,
   ): ToolInvocation<WebSearchToolParams, WebSearchToolResult> {
-    return new WebSearchToolInvocation(this.config, params);
+    return new WebSearchToolInvocation(
+      this.config,
+      params,
+      messageBus,
+      _toolName,
+      _toolDisplayName,
+    );
   }
 }

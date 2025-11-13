@@ -4,19 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/** @vitest-environment jsdom */
-
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { act, useState } from 'react';
+import { renderHook } from '../../test-utils/render.js';
+import { waitFor } from '../../test-utils/async.js';
 import { useAtCompletion } from './useAtCompletion.js';
-import { Config, FileSearch, FileSearchFactory } from '@google/gemini-cli-core';
-import {
-  createTmpDir,
-  cleanupTmpDir,
-  FileSystemStructure,
-} from '@google/gemini-cli-test-utils';
-import { useState } from 'react';
-import { Suggestion } from '../components/SuggestionsDisplay.js';
+import type { Config, FileSearch } from '@google/gemini-cli-core';
+import { FileSearchFactory } from '@google/gemini-cli-core';
+import type { FileSystemStructure } from '@google/gemini-cli-test-utils';
+import { createTmpDir, cleanupTmpDir } from '@google/gemini-cli-test-utils';
+import type { Suggestion } from '../components/SuggestionsDisplay.js';
 
 // Test harness to capture the state from the hook's callbacks.
 function useTestHarnessForAtCompletion(
@@ -51,6 +48,7 @@ describe('useAtCompletion', () => {
         respectGeminiIgnore: true,
       })),
       getEnableRecursiveFileSearch: () => true,
+      getFileFilteringDisableFuzzySearch: () => false,
     } as unknown as Config;
     vi.clearAllMocks();
   });
@@ -78,9 +76,10 @@ describe('useAtCompletion', () => {
       );
 
       await waitFor(() => {
-        expect(result.current.suggestions.length).toBeGreaterThan(0);
+        expect(result.current.suggestions.length).toBeGreaterThan(5);
       });
 
+      expect(result.current.suggestions.length).toBeGreaterThan(0);
       expect(result.current.suggestions.map((s) => s.value)).toEqual([
         'src/',
         'src/components/',
@@ -139,17 +138,65 @@ describe('useAtCompletion', () => {
         'file.txt',
       ]);
     });
+
+    it('should perform a case-insensitive search by lowercasing the pattern', async () => {
+      testRootDir = await createTmpDir({ 'cRaZycAsE.txt': '' });
+
+      const fileSearch = FileSearchFactory.create({
+        projectRoot: testRootDir,
+        ignoreDirs: [],
+        useGitignore: false,
+        useGeminiignore: false,
+        cache: false,
+        cacheTtl: 0,
+        enableRecursiveFileSearch: true,
+        disableFuzzySearch: false,
+      });
+      await fileSearch.initialize();
+
+      vi.spyOn(FileSearchFactory, 'create').mockReturnValue(fileSearch);
+
+      const { result } = renderHook(() =>
+        useTestHarnessForAtCompletion(
+          true,
+          'CrAzYCaSe',
+          mockConfig,
+          testRootDir,
+        ),
+      );
+
+      // The hook should find 'cRaZycAsE.txt' even though the pattern is 'CrAzYCaSe'.
+      await waitFor(() => {
+        expect(result.current.suggestions.map((s) => s.value)).toEqual([
+          'cRaZycAsE.txt',
+        ]);
+      });
+    });
   });
 
   describe('UI State and Loading Behavior', () => {
     it('should be in a loading state during initial file system crawl', async () => {
       testRootDir = await createTmpDir({});
+
+      // Mock FileSearch to be slow to catch the loading state
+      const mockFileSearch = {
+        initialize: vi.fn().mockImplementation(async () => {
+          await new Promise((resolve) => setTimeout(resolve, 50));
+        }),
+        search: vi.fn().mockResolvedValue([]),
+      };
+      vi.spyOn(FileSearchFactory, 'create').mockReturnValue(
+        mockFileSearch as unknown as FileSearch,
+      );
+
       const { result } = renderHook(() =>
         useTestHarnessForAtCompletion(true, '', mockConfig, testRootDir),
       );
 
       // It's initially true because the effect runs synchronously.
-      expect(result.current.isLoadingSuggestions).toBe(true);
+      await waitFor(() => {
+        expect(result.current.isLoadingSuggestions).toBe(true);
+      });
 
       // Wait for the loading to complete.
       await waitFor(() => {
@@ -198,15 +245,18 @@ describe('useAtCompletion', () => {
         cache: false,
         cacheTtl: 0,
         enableRecursiveFileSearch: true,
+        disableFuzzySearch: false,
       });
       await realFileSearch.initialize();
 
+      // Mock that returns results immediately but we'll control timing with fake timers
       const mockFileSearch: FileSearch = {
         initialize: vi.fn().mockResolvedValue(undefined),
-        search: vi.fn().mockImplementation(async (...args) => {
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          return realFileSearch.search(...args);
-        }),
+        search: vi
+          .fn()
+          .mockImplementation(async (pattern, options) =>
+            realFileSearch.search(pattern, options),
+          ),
       };
       vi.spyOn(FileSearchFactory, 'create').mockReturnValue(mockFileSearch);
 
@@ -216,33 +266,42 @@ describe('useAtCompletion', () => {
         { initialProps: { pattern: 'a' } },
       );
 
-      // Wait for the initial (slow) search to complete
+      // Wait for the initial search to complete (using real timers)
       await waitFor(() => {
         expect(result.current.suggestions.map((s) => s.value)).toEqual([
           'a.txt',
         ]);
       });
 
-      // Now, rerender to trigger the second search
-      rerender({ pattern: 'b' });
+      // Now switch to fake timers for precise control of the loading behavior
+      vi.useFakeTimers();
 
-      // Wait for the loading indicator to appear
-      await waitFor(() => {
-        expect(result.current.isLoadingSuggestions).toBe(true);
+      // Trigger the second search
+      act(() => {
+        rerender({ pattern: 'b' });
       });
 
-      // Suggestions should be cleared while loading
+      // Initially, loading should be false (before 200ms timer)
+      expect(result.current.isLoadingSuggestions).toBe(false);
+
+      // Advance time by exactly 200ms to trigger the loading state
+      act(() => {
+        vi.advanceTimersByTime(200);
+      });
+
+      // Now loading should be true and suggestions should be cleared
+      expect(result.current.isLoadingSuggestions).toBe(true);
       expect(result.current.suggestions).toEqual([]);
 
-      // Wait for the final (slow) search to complete
-      await waitFor(
-        () => {
-          expect(result.current.suggestions.map((s) => s.value)).toEqual([
-            'b.txt',
-          ]);
-        },
-        { timeout: 1000 },
-      ); // Increase timeout for the slow search
+      // Switch back to real timers for the final waitFor
+      vi.useRealTimers();
+
+      // Wait for the search results to be processed
+      await waitFor(() => {
+        expect(result.current.suggestions.map((s) => s.value)).toEqual([
+          'b.txt',
+        ]);
+      });
 
       expect(result.current.isLoadingSuggestions).toBe(false);
     });
@@ -468,6 +527,7 @@ describe('useAtCompletion', () => {
           respectGitIgnore: true,
           respectGeminiIgnore: true,
         })),
+        getFileFilteringDisableFuzzySearch: () => false,
       } as unknown as Config;
 
       const { result } = renderHook(() =>

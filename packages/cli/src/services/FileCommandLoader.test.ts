@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import * as glob from 'glob';
 import * as path from 'node:path';
-import {
-  Config,
-  getProjectCommandsDir,
-  getUserCommandsDir,
-} from '@google/gemini-cli-core';
+import type { Config } from '@google/gemini-cli-core';
+import { GEMINI_DIR, Storage } from '@google/gemini-cli-core';
 import mock from 'mock-fs';
 import { FileCommandLoader } from './FileCommandLoader.js';
 import { assert, vi } from 'vitest';
@@ -17,15 +15,23 @@ import { createMockCommandContext } from '../test-utils/mockCommandContext.js';
 import {
   SHELL_INJECTION_TRIGGER,
   SHORTHAND_ARGS_PLACEHOLDER,
+  type PromptPipelineContent,
 } from './prompt-processors/types.js';
 import {
   ConfirmationRequiredError,
   ShellProcessor,
 } from './prompt-processors/shellProcessor.js';
 import { DefaultArgumentProcessor } from './prompt-processors/argumentProcessor.js';
-import { CommandContext } from '../ui/commands/types.js';
+import type { CommandContext } from '../ui/commands/types.js';
+import { AtFileProcessor } from './prompt-processors/atFileProcessor.js';
 
 const mockShellProcess = vi.hoisted(() => vi.fn());
+const mockAtFileProcess = vi.hoisted(() => vi.fn());
+vi.mock('./prompt-processors/atFileProcessor.js', () => ({
+  AtFileProcessor: vi.fn().mockImplementation(() => ({
+    process: mockAtFileProcess,
+  })),
+}));
 vi.mock('./prompt-processors/shellProcessor.js', () => ({
   ShellProcessor: vi.fn().mockImplementation(() => ({
     process: mockShellProcess,
@@ -57,6 +63,7 @@ vi.mock('@google/gemini-cli-core', async (importOriginal) => {
     await importOriginal<typeof import('@google/gemini-cli-core')>();
   return {
     ...original,
+    Storage: original.Storage,
     isCommandAllowed: vi.fn(),
     ShellExecutionService: {
       execute: vi.fn(),
@@ -64,21 +71,41 @@ vi.mock('@google/gemini-cli-core', async (importOriginal) => {
   };
 });
 
+vi.mock('glob', () => ({
+  glob: vi.fn(),
+}));
+
 describe('FileCommandLoader', () => {
   const signal: AbortSignal = new AbortController().signal;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
+    const { glob: actualGlob } =
+      await vi.importActual<typeof import('glob')>('glob');
+    vi.mocked(glob.glob).mockImplementation(actualGlob);
     mockShellProcess.mockImplementation(
-      (prompt: string, context: CommandContext) => {
+      (prompt: PromptPipelineContent, context: CommandContext) => {
         const userArgsRaw = context?.invocation?.args || '';
-        const processedPrompt = prompt.replaceAll(
+        // This is a simplified mock. A real implementation would need to iterate
+        // through all parts and process only the text parts.
+        const firstTextPart = prompt.find(
+          (p) => typeof p === 'string' || 'text' in p,
+        );
+        let textContent = '';
+        if (typeof firstTextPart === 'string') {
+          textContent = firstTextPart;
+        } else if (firstTextPart && 'text' in firstTextPart) {
+          textContent = firstTextPart.text ?? '';
+        }
+
+        const processedText = textContent.replaceAll(
           SHORTHAND_ARGS_PLACEHOLDER,
           userArgsRaw,
         );
-        return Promise.resolve(processedPrompt);
+        return Promise.resolve([{ text: processedText }]);
       },
     );
+    mockAtFileProcess.mockImplementation(async (prompt: string) => prompt);
   });
 
   afterEach(() => {
@@ -86,7 +113,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('loads a single command from a file', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'test.toml': 'prompt = "This is a test prompt"',
@@ -112,7 +139,7 @@ describe('FileCommandLoader', () => {
       '',
     );
     if (result?.type === 'submit_prompt') {
-      expect(result.content).toBe('This is a test prompt');
+      expect(result.content).toEqual([{ text: 'This is a test prompt' }]);
     } else {
       assert.fail('Incorrect action type');
     }
@@ -127,7 +154,7 @@ describe('FileCommandLoader', () => {
   itif(process.platform !== 'win32')(
     'loads commands from a symlinked directory',
     async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       const realCommandsDir = '/real/commands';
       mock({
         [realCommandsDir]: {
@@ -152,7 +179,7 @@ describe('FileCommandLoader', () => {
   itif(process.platform !== 'win32')(
     'loads commands from a symlinked subdirectory',
     async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       const realNamespacedDir = '/real/namespaced-commands';
       mock({
         [userCommandsDir]: {
@@ -176,7 +203,7 @@ describe('FileCommandLoader', () => {
   );
 
   it('loads multiple commands', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'test1.toml': 'prompt = "Prompt 1"',
@@ -191,7 +218,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('creates deeply nested namespaces correctly', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
 
     mock({
       [userCommandsDir]: {
@@ -205,6 +232,8 @@ describe('FileCommandLoader', () => {
     const mockConfig = {
       getProjectRoot: vi.fn(() => '/path/to/project'),
       getExtensions: vi.fn(() => []),
+      getFolderTrust: vi.fn(() => false),
+      isTrustedFolder: vi.fn(() => false),
     } as unknown as Config;
     const loader = new FileCommandLoader(mockConfig);
     const commands = await loader.loadCommands(signal);
@@ -213,7 +242,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('creates namespaces from nested directories', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         git: {
@@ -232,8 +261,10 @@ describe('FileCommandLoader', () => {
   });
 
   it('returns both user and project commands in order', async () => {
-    const userCommandsDir = getUserCommandsDir();
-    const projectCommandsDir = getProjectCommandsDir(process.cwd());
+    const userCommandsDir = Storage.getUserCommandsDir();
+    const projectCommandsDir = new Storage(
+      process.cwd(),
+    ).getProjectCommandsDir();
     mock({
       [userCommandsDir]: {
         'test.toml': 'prompt = "User prompt"',
@@ -246,6 +277,8 @@ describe('FileCommandLoader', () => {
     const mockConfig = {
       getProjectRoot: vi.fn(() => process.cwd()),
       getExtensions: vi.fn(() => []),
+      getFolderTrust: vi.fn(() => false),
+      isTrustedFolder: vi.fn(() => false),
     } as unknown as Config;
     const loader = new FileCommandLoader(mockConfig);
     const commands = await loader.loadCommands(signal);
@@ -262,7 +295,7 @@ describe('FileCommandLoader', () => {
       '',
     );
     if (userResult?.type === 'submit_prompt') {
-      expect(userResult.content).toBe('User prompt');
+      expect(userResult.content).toEqual([{ text: 'User prompt' }]);
     } else {
       assert.fail('Incorrect action type for user command');
     }
@@ -277,14 +310,14 @@ describe('FileCommandLoader', () => {
       '',
     );
     if (projectResult?.type === 'submit_prompt') {
-      expect(projectResult.content).toBe('Project prompt');
+      expect(projectResult.content).toEqual([{ text: 'Project prompt' }]);
     } else {
       assert.fail('Incorrect action type for project command');
     }
   });
 
   it('ignores files with TOML syntax errors', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'invalid.toml': 'this is not valid toml',
@@ -300,7 +333,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('ignores files that are semantically invalid (missing prompt)', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'no_prompt.toml': 'description = "This file is missing a prompt"',
@@ -316,7 +349,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('handles filename edge cases correctly', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'test.v1.toml': 'prompt = "Test prompt"',
@@ -338,7 +371,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('uses a default description if not provided', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'test.toml': 'prompt = "Test prompt"',
@@ -353,7 +386,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('uses the provided description', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'test.toml': 'prompt = "Test prompt"\ndescription = "My test command"',
@@ -368,7 +401,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('should sanitize colons in filenames to prevent namespace conflicts', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = Storage.getUserCommandsDir();
     mock({
       [userCommandsDir]: {
         'legacy:command.toml': 'prompt = "This is a legacy command"',
@@ -388,7 +421,7 @@ describe('FileCommandLoader', () => {
 
   describe('Processor Instantiation Logic', () => {
     it('instantiates only DefaultArgumentProcessor if no {{args}} or !{} are present', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'simple.toml': `prompt = "Just a regular prompt"`,
@@ -403,7 +436,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('instantiates only ShellProcessor if {{args}} is present (but not !{})', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'args.toml': `prompt = "Prompt with {{args}}"`,
@@ -418,7 +451,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('instantiates ShellProcessor and DefaultArgumentProcessor if !{} is present (but not {{args}})', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Prompt with !{cmd}"`,
@@ -433,7 +466,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('instantiates only ShellProcessor if both {{args}} and !{} are present', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'both.toml': `prompt = "Prompt with {{args}} and !{cmd}"`,
@@ -446,15 +479,67 @@ describe('FileCommandLoader', () => {
       expect(ShellProcessor).toHaveBeenCalledTimes(1);
       expect(DefaultArgumentProcessor).not.toHaveBeenCalled();
     });
+
+    it('instantiates AtFileProcessor and DefaultArgumentProcessor if @{} is present', async () => {
+      const userCommandsDir = Storage.getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'at-file.toml': `prompt = "Context: @{./my-file.txt}"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(AtFileProcessor).toHaveBeenCalledTimes(1);
+      expect(ShellProcessor).not.toHaveBeenCalled();
+      expect(DefaultArgumentProcessor).toHaveBeenCalledTimes(1);
+    });
+
+    it('instantiates ShellProcessor and AtFileProcessor if !{} and @{} are present', async () => {
+      const userCommandsDir = Storage.getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'shell-and-at.toml': `prompt = "Run !{cmd} with @{file.txt}"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(ShellProcessor).toHaveBeenCalledTimes(1);
+      expect(AtFileProcessor).toHaveBeenCalledTimes(1);
+      expect(DefaultArgumentProcessor).toHaveBeenCalledTimes(1); // because no {{args}}
+    });
+
+    it('instantiates only ShellProcessor and AtFileProcessor if {{args}} and @{} are present', async () => {
+      const userCommandsDir = Storage.getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'args-and-at.toml': `prompt = "Run {{args}} with @{file.txt}"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(ShellProcessor).toHaveBeenCalledTimes(1);
+      expect(AtFileProcessor).toHaveBeenCalledTimes(1);
+      expect(DefaultArgumentProcessor).not.toHaveBeenCalled();
+    });
   });
 
   describe('Extension Command Loading', () => {
     it('loads commands from active extensions', async () => {
-      const userCommandsDir = getUserCommandsDir();
-      const projectCommandsDir = getProjectCommandsDir(process.cwd());
+      const userCommandsDir = Storage.getUserCommandsDir();
+      const projectCommandsDir = new Storage(
+        process.cwd(),
+      ).getProjectCommandsDir();
       const extensionDir = path.join(
         process.cwd(),
-        '.gemini/extensions/test-ext',
+        GEMINI_DIR,
+        'extensions',
+        'test-ext',
       );
 
       mock({
@@ -485,6 +570,8 @@ describe('FileCommandLoader', () => {
             path: extensionDir,
           },
         ]),
+        getFolderTrust: vi.fn(() => false),
+        isTrustedFolder: vi.fn(() => false),
       } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
@@ -499,11 +586,15 @@ describe('FileCommandLoader', () => {
     });
 
     it('extension commands have extensionName metadata for conflict resolution', async () => {
-      const userCommandsDir = getUserCommandsDir();
-      const projectCommandsDir = getProjectCommandsDir(process.cwd());
+      const userCommandsDir = Storage.getUserCommandsDir();
+      const projectCommandsDir = new Storage(
+        process.cwd(),
+      ).getProjectCommandsDir();
       const extensionDir = path.join(
         process.cwd(),
-        '.gemini/extensions/test-ext',
+        GEMINI_DIR,
+        'extensions',
+        'test-ext',
       );
 
       mock({
@@ -534,6 +625,8 @@ describe('FileCommandLoader', () => {
             path: extensionDir,
           },
         ]),
+        getFolderTrust: vi.fn(() => false),
+        isTrustedFolder: vi.fn(() => false),
       } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
@@ -555,7 +648,7 @@ describe('FileCommandLoader', () => {
       );
       expect(result0?.type).toBe('submit_prompt');
       if (result0?.type === 'submit_prompt') {
-        expect(result0.content).toBe('User deploy command');
+        expect(result0.content).toEqual([{ text: 'User deploy command' }]);
       }
 
       expect(commands[1].name).toBe('deploy');
@@ -572,7 +665,7 @@ describe('FileCommandLoader', () => {
       );
       expect(result1?.type).toBe('submit_prompt');
       if (result1?.type === 'submit_prompt') {
-        expect(result1.content).toBe('Project deploy command');
+        expect(result1.content).toEqual([{ text: 'Project deploy command' }]);
       }
 
       expect(commands[2].name).toBe('deploy');
@@ -590,18 +683,22 @@ describe('FileCommandLoader', () => {
       );
       expect(result2?.type).toBe('submit_prompt');
       if (result2?.type === 'submit_prompt') {
-        expect(result2.content).toBe('Extension deploy command');
+        expect(result2.content).toEqual([{ text: 'Extension deploy command' }]);
       }
     });
 
     it('only loads commands from active extensions', async () => {
       const extensionDir1 = path.join(
         process.cwd(),
-        '.gemini/extensions/active-ext',
+        GEMINI_DIR,
+        'extensions',
+        'active-ext',
       );
       const extensionDir2 = path.join(
         process.cwd(),
-        '.gemini/extensions/inactive-ext',
+        GEMINI_DIR,
+        'extensions',
+        'inactive-ext',
       );
 
       mock({
@@ -641,6 +738,8 @@ describe('FileCommandLoader', () => {
             path: extensionDir2,
           },
         ]),
+        getFolderTrust: vi.fn(() => false),
+        isTrustedFolder: vi.fn(() => false),
       } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
@@ -654,7 +753,9 @@ describe('FileCommandLoader', () => {
     it('handles missing extension commands directory gracefully', async () => {
       const extensionDir = path.join(
         process.cwd(),
-        '.gemini/extensions/no-commands',
+        GEMINI_DIR,
+        'extensions',
+        'no-commands',
       );
 
       mock({
@@ -677,6 +778,8 @@ describe('FileCommandLoader', () => {
             path: extensionDir,
           },
         ]),
+        getFolderTrust: vi.fn(() => false),
+        isTrustedFolder: vi.fn(() => false),
       } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
@@ -684,7 +787,12 @@ describe('FileCommandLoader', () => {
     });
 
     it('handles nested command structure in extensions', async () => {
-      const extensionDir = path.join(process.cwd(), '.gemini/extensions/a');
+      const extensionDir = path.join(
+        process.cwd(),
+        GEMINI_DIR,
+        'extensions',
+        'a',
+      );
 
       mock({
         [extensionDir]: {
@@ -709,6 +817,8 @@ describe('FileCommandLoader', () => {
         getExtensions: vi.fn(() => [
           { name: 'a', version: '1.0.0', isActive: true, path: extensionDir },
         ]),
+        getFolderTrust: vi.fn(() => false),
+        isTrustedFolder: vi.fn(() => false),
       } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
@@ -733,16 +843,64 @@ describe('FileCommandLoader', () => {
         '',
       );
       if (result?.type === 'submit_prompt') {
-        expect(result.content).toBe('Nested command from extension a');
+        expect(result.content).toEqual([
+          { text: 'Nested command from extension a' },
+        ]);
       } else {
         assert.fail('Incorrect action type');
       }
+    });
+
+    it('correctly loads extensionId for extension commands', async () => {
+      const extensionId = 'my-test-ext-id-123';
+      const extensionDir = path.join(
+        process.cwd(),
+        GEMINI_DIR,
+        'extensions',
+        'my-test-ext',
+      );
+
+      mock({
+        [extensionDir]: {
+          'gemini-extension.json': JSON.stringify({
+            name: 'my-test-ext',
+            id: extensionId,
+            version: '1.0.0',
+          }),
+          commands: {
+            'my-cmd.toml': 'prompt = "My test command"',
+          },
+        },
+      });
+
+      const mockConfig = {
+        getProjectRoot: vi.fn(() => process.cwd()),
+        getExtensions: vi.fn(() => [
+          {
+            name: 'my-test-ext',
+            id: extensionId,
+            version: '1.0.0',
+            isActive: true,
+            path: extensionDir,
+          },
+        ]),
+        getFolderTrust: vi.fn(() => false),
+        isTrustedFolder: vi.fn(() => false),
+      } as unknown as Config;
+      const loader = new FileCommandLoader(mockConfig);
+      const commands = await loader.loadCommands(signal);
+
+      expect(commands).toHaveLength(1);
+      const command = commands[0];
+      expect(command.name).toBe('my-cmd');
+      expect(command.extensionName).toBe('my-test-ext');
+      expect(command.extensionId).toBe(extensionId);
     });
   });
 
   describe('Argument Handling Integration (via ShellProcessor)', () => {
     it('correctly processes a command with {{args}}', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'shorthand.toml':
@@ -767,14 +925,16 @@ describe('FileCommandLoader', () => {
       );
       expect(result?.type).toBe('submit_prompt');
       if (result?.type === 'submit_prompt') {
-        expect(result.content).toBe('The user wants to: do something cool');
+        expect(result.content).toEqual([
+          { text: 'The user wants to: do something cool' },
+        ]);
       }
     });
   });
 
   describe('Default Argument Processor Integration', () => {
     it('correctly processes a command without {{args}}', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'model_led.toml':
@@ -801,14 +961,14 @@ describe('FileCommandLoader', () => {
       if (result?.type === 'submit_prompt') {
         const expectedContent =
           'This is the instruction.\n\n/model_led 1.2.0 added "a feature"';
-        expect(result.content).toBe(expectedContent);
+        expect(result.content).toEqual([{ text: expectedContent }]);
       }
     });
   });
 
   describe('Shell Processor Integration', () => {
     it('instantiates ShellProcessor if {{args}} is present (even without shell trigger)', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'args_only.toml': `prompt = "Hello {{args}}"`,
@@ -821,7 +981,7 @@ describe('FileCommandLoader', () => {
       expect(ShellProcessor).toHaveBeenCalledWith('args_only');
     });
     it('instantiates ShellProcessor if the trigger is present', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Run this: ${SHELL_INJECTION_TRIGGER}echo hello}"`,
@@ -835,7 +995,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('does not instantiate ShellProcessor if no triggers ({{args}} or !{}) are present', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'regular.toml': `prompt = "Just a regular prompt"`,
@@ -849,13 +1009,13 @@ describe('FileCommandLoader', () => {
     });
 
     it('returns a "submit_prompt" action if shell processing succeeds', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Run !{echo 'hello'}"`,
         },
       });
-      mockShellProcess.mockResolvedValue('Run hello');
+      mockShellProcess.mockResolvedValue([{ text: 'Run hello' }]);
 
       const loader = new FileCommandLoader(null as unknown as Config);
       const commands = await loader.loadCommands(signal);
@@ -871,12 +1031,12 @@ describe('FileCommandLoader', () => {
 
       expect(result?.type).toBe('submit_prompt');
       if (result?.type === 'submit_prompt') {
-        expect(result.content).toBe('Run hello');
+        expect(result.content).toEqual([{ text: 'Run hello' }]);
       }
     });
 
     it('returns a "confirm_shell_commands" action if shell processing requires it', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       const rawInvocation = '/shell rm -rf /';
       mock({
         [userCommandsDir]: {
@@ -910,7 +1070,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('re-throws other errors from the processor', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Run !{something}"`,
@@ -934,23 +1094,36 @@ describe('FileCommandLoader', () => {
         ),
       ).rejects.toThrow('Something else went wrong');
     });
-    it('assembles the processor pipeline in the correct order (Shell -> Default)', async () => {
-      const userCommandsDir = getUserCommandsDir();
+    it('assembles the processor pipeline in the correct order (AtFile -> Shell -> Default)', async () => {
+      const userCommandsDir = Storage.getUserCommandsDir();
       mock({
         [userCommandsDir]: {
-          // This prompt uses !{} but NOT {{args}}, so both processors should be active.
+          // This prompt uses !{}, @{}, but NOT {{args}}, so all processors should be active.
           'pipeline.toml': `
-              prompt = "Shell says: ${SHELL_INJECTION_TRIGGER}echo foo}."
+              prompt = "Shell says: !{echo foo}. File says: @{./bar.txt}"
             `,
         },
+        './bar.txt': 'bar content',
       });
 
       const defaultProcessMock = vi
         .fn()
-        .mockImplementation((p) => Promise.resolve(`${p}-default-processed`));
+        .mockImplementation((p: PromptPipelineContent) =>
+          Promise.resolve([
+            { text: `${(p[0] as { text: string }).text}-default-processed` },
+          ]),
+        );
 
-      mockShellProcess.mockImplementation((p) =>
-        Promise.resolve(`${p}-shell-processed`),
+      mockShellProcess.mockImplementation((p: PromptPipelineContent) =>
+        Promise.resolve([
+          { text: `${(p[0] as { text: string }).text}-shell-processed` },
+        ]),
+      );
+
+      mockAtFileProcess.mockImplementation((p: PromptPipelineContent) =>
+        Promise.resolve([
+          { text: `${(p[0] as { text: string }).text}-at-file-processed` },
+        ]),
       );
 
       vi.mocked(DefaultArgumentProcessor).mockImplementation(
@@ -968,35 +1141,200 @@ describe('FileCommandLoader', () => {
       const result = await command!.action!(
         createMockCommandContext({
           invocation: {
-            raw: '/pipeline bar',
+            raw: '/pipeline baz',
             name: 'pipeline',
-            args: 'bar',
+            args: 'baz',
           },
         }),
-        'bar',
+        'baz',
       );
 
+      expect(mockAtFileProcess.mock.invocationCallOrder[0]).toBeLessThan(
+        mockShellProcess.mock.invocationCallOrder[0],
+      );
       expect(mockShellProcess.mock.invocationCallOrder[0]).toBeLessThan(
         defaultProcessMock.mock.invocationCallOrder[0],
       );
 
       // Verify the flow of the prompt through the processors
-      // 1. Shell processor runs first
-      expect(mockShellProcess).toHaveBeenCalledWith(
-        expect.stringContaining(SHELL_INJECTION_TRIGGER),
+      // 1. AtFile processor runs first
+      expect(mockAtFileProcess).toHaveBeenCalledWith(
+        [{ text: expect.stringContaining('@{./bar.txt}') }],
         expect.any(Object),
       );
-      // 2. Default processor runs second
+      // 2. Shell processor runs second
+      expect(mockShellProcess).toHaveBeenCalledWith(
+        [{ text: expect.stringContaining('-at-file-processed') }],
+        expect.any(Object),
+      );
+      // 3. Default processor runs third
       expect(defaultProcessMock).toHaveBeenCalledWith(
-        expect.stringContaining('-shell-processed'),
+        [{ text: expect.stringContaining('-shell-processed') }],
         expect.any(Object),
       );
 
       if (result?.type === 'submit_prompt') {
-        expect(result.content).toContain('-shell-processed-default-processed');
+        const contentAsArray = Array.isArray(result.content)
+          ? result.content
+          : [result.content];
+        expect(contentAsArray.length).toBeGreaterThan(0);
+        const firstPart = contentAsArray[0];
+
+        if (typeof firstPart === 'object' && firstPart && 'text' in firstPart) {
+          expect(firstPart.text).toContain(
+            '-at-file-processed-shell-processed-default-processed',
+          );
+        } else {
+          assert.fail(
+            'First part of content is not a text part or is a string',
+          );
+        }
       } else {
         assert.fail('Incorrect action type');
       }
+    });
+  });
+
+  describe('@-file Processor Integration', () => {
+    it('correctly processes a command with @{file}', async () => {
+      const userCommandsDir = Storage.getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'at-file.toml':
+            'prompt = "Context from file: @{./test.txt}"\ndescription = "@-file test"',
+        },
+        './test.txt': 'file content',
+      });
+
+      mockAtFileProcess.mockImplementation(
+        async (prompt: PromptPipelineContent) => {
+          // A simplified mock of AtFileProcessor's behavior
+          const textContent = (prompt[0] as { text: string }).text;
+          if (textContent.includes('@{./test.txt}')) {
+            return [
+              {
+                text: textContent.replace('@{./test.txt}', 'file content'),
+              },
+            ];
+          }
+          return prompt;
+        },
+      );
+
+      // Prevent default processor from interfering
+      vi.mocked(DefaultArgumentProcessor).mockImplementation(
+        () =>
+          ({
+            process: (p: PromptPipelineContent) => Promise.resolve(p),
+          }) as unknown as DefaultArgumentProcessor,
+      );
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      const commands = await loader.loadCommands(signal);
+      const command = commands.find((c) => c.name === 'at-file');
+      expect(command).toBeDefined();
+
+      const result = await command!.action?.(
+        createMockCommandContext({
+          invocation: {
+            raw: '/at-file',
+            name: 'at-file',
+            args: '',
+          },
+        }),
+        '',
+      );
+      expect(result?.type).toBe('submit_prompt');
+      if (result?.type === 'submit_prompt') {
+        expect(result.content).toEqual([
+          { text: 'Context from file: file content' },
+        ]);
+      }
+    });
+  });
+
+  describe('with folder trust enabled', () => {
+    it('loads multiple commands', async () => {
+      const mockConfig = {
+        getProjectRoot: vi.fn(() => '/path/to/project'),
+        getExtensions: vi.fn(() => []),
+        getFolderTrust: vi.fn(() => true),
+        isTrustedFolder: vi.fn(() => true),
+      } as unknown as Config;
+      const userCommandsDir = Storage.getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'test1.toml': 'prompt = "Prompt 1"',
+          'test2.toml': 'prompt = "Prompt 2"',
+        },
+      });
+
+      const loader = new FileCommandLoader(mockConfig);
+      const commands = await loader.loadCommands(signal);
+
+      expect(commands).toHaveLength(2);
+    });
+
+    it('does not load when folder is not trusted', async () => {
+      const mockConfig = {
+        getProjectRoot: vi.fn(() => '/path/to/project'),
+        getExtensions: vi.fn(() => []),
+        getFolderTrust: vi.fn(() => true),
+        isTrustedFolder: vi.fn(() => false),
+      } as unknown as Config;
+      const userCommandsDir = Storage.getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'test1.toml': 'prompt = "Prompt 1"',
+          'test2.toml': 'prompt = "Prompt 2"',
+        },
+      });
+
+      const loader = new FileCommandLoader(mockConfig);
+      const commands = await loader.loadCommands(signal);
+
+      expect(commands).toHaveLength(0);
+    });
+  });
+
+  describe('Aborted signal', () => {
+    it('does not log errors if the signal is aborted', async () => {
+      const controller = new AbortController();
+      const abortSignal = controller.signal;
+
+      const consoleErrorSpy = vi
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
+      const mockConfig = {
+        getProjectRoot: vi.fn(() => '/path/to/project'),
+        getExtensions: vi.fn(() => []),
+        getFolderTrust: vi.fn(() => false),
+        isTrustedFolder: vi.fn(() => false),
+      } as unknown as Config;
+
+      // Set up mock-fs so that the loader attempts to read a directory.
+      const userCommandsDir = Storage.getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'test1.toml': 'prompt = "Prompt 1"',
+        },
+      });
+
+      const loader = new FileCommandLoader(mockConfig);
+
+      // Mock glob to throw an AbortError
+      const abortError = new DOMException('Aborted', 'AbortError');
+      vi.mocked(glob.glob).mockImplementation(async () => {
+        controller.abort(); // Ensure the signal is aborted when the service checks
+        throw abortError;
+      });
+
+      await loader.loadCommands(abortSignal);
+
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+      consoleErrorSpy.mockRestore();
     });
   });
 });

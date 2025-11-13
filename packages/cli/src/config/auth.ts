@@ -5,10 +5,10 @@
  */
 
 import { AuthType } from '@google/gemini-cli-core';
-import { loadEnvironment } from './settings.js';
+import { loadEnvironment, loadSettings } from './settings.js';
 
-export const validateAuthMethod = (authMethod: string): string | null => {
-  loadEnvironment();
+export function validateAuthMethod(authMethod: string): string | null {
+  loadEnvironment(loadSettings().merged);
   if (
     authMethod === AuthType.LOGIN_WITH_GOOGLE ||
     authMethod === AuthType.CLOUD_SHELL
@@ -17,9 +17,6 @@ export const validateAuthMethod = (authMethod: string): string | null => {
   }
 
   if (authMethod === AuthType.USE_GEMINI) {
-    if (!process.env['GEMINI_API_KEY']) {
-      return 'GEMINI_API_KEY environment variable not found. Add that to your environment and try again (no reload needed if using .env)!';
-    }
     return null;
   }
 
@@ -40,4 +37,4 @@ export const validateAuthMethod = (authMethod: string): string | null => {
   }
 
   return 'Invalid auth method selected.';
-};
+}

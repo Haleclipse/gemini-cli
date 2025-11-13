@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DiscoveredMCPPrompt } from '../tools/mcp-client.js';
+import type { DiscoveredMCPPrompt } from '../tools/mcp-client.js';
+import { debugLogger } from '../utils/debugLogger.js';
 
 export class PromptRegistry {
   private prompts: Map<string, DiscoveredMCPPrompt> = new Map();
@@ -16,7 +17,7 @@ export class PromptRegistry {
   registerPrompt(prompt: DiscoveredMCPPrompt): void {
     if (this.prompts.has(prompt.name)) {
       const newName = `${prompt.serverName}_${prompt.name}`;
-      console.warn(
+      debugLogger.warn(
         `Prompt with name "${prompt.name}" is already registered. Renaming to "${newName}".`,
       );
       this.prompts.set(newName, { ...prompt, name: newName });

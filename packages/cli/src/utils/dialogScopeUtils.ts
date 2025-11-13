@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { SettingScope, LoadedSettings } from '../config/settings.js';
+import type {
+  LoadableSettingScope,
+  LoadedSettings,
+} from '../config/settings.js';
+import { isLoadableSettingScope, SettingScope } from '../config/settings.js';
 import { settingExistsInScope } from './settingsUtils.js';
 
 /**
@@ -19,7 +23,10 @@ export const SCOPE_LABELS = {
 /**
  * Helper function to get scope items for radio button selects
  */
-export function getScopeItems() {
+export function getScopeItems(): Array<{
+  label: string;
+  value: LoadableSettingScope;
+}> {
   return [
     { label: SCOPE_LABELS[SettingScope.User], value: SettingScope.User },
     {
@@ -35,12 +42,12 @@ export function getScopeItems() {
  */
 export function getScopeMessageForSetting(
   settingKey: string,
-  selectedScope: SettingScope,
+  selectedScope: LoadableSettingScope,
   settings: LoadedSettings,
 ): string {
-  const otherScopes = Object.values(SettingScope).filter(
-    (scope) => scope !== selectedScope,
-  );
+  const otherScopes = Object.values(SettingScope)
+    .filter(isLoadableSettingScope)
+    .filter((scope) => scope !== selectedScope);
 
   const modifiedInOtherScopes = otherScopes.filter((scope) => {
     const scopeSettings = settings.forScope(scope).settings;

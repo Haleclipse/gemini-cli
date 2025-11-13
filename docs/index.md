@@ -1,83 +1,105 @@
----
-layout: home
+# Welcome to Gemini CLI documentation
 
-hero:
-  name: Gemini CLI
-  text: AI 驱动的命令行工具
-  tagline: 连接您的工具，理解您的代码，加速您的工作流程
-  actions:
-    - theme: brand
-      text: 中文文档
-      link: /zh/guide
-    - theme: alt
-      text: English Documentation
-      link: /guide
+This documentation provides a comprehensive guide to installing, using, and
+developing Gemini CLI. This tool lets you interact with Gemini models through a
+command-line interface.
 
-features:
-  - icon: 🚀
-    title: 快速强大
-    details: 查询和编辑超出 Gemini 1M token 上下文窗口的大型代码库
-  - icon: 🎨
-    title: 多模态
-    details: 使用 Gemini 的多模态能力从 PDF 或草图生成新应用
-  - icon: 🔧
-    title: 可扩展
-    details: 使用工具和 MCP 服务器连接新功能
-  - icon: 🔍
-    title: Google 搜索
-    details: 使用内置的 Google 搜索工具增强您的查询
----
+## Overview
 
-## 🔄 上游最新更新
+Gemini CLI brings the capabilities of Gemini models to your terminal in an
+interactive Read-Eval-Print Loop (REPL) environment. Gemini CLI consists of a
+client-side application (`packages/cli`) that communicates with a local server
+(`packages/core`), which in turn manages requests to the Gemini API and its AI
+models. Gemini CLI also contains a variety of tools for tasks such as performing
+file system operations, running shells, and web fetching, which are managed by
+`packages/core`.
 
-::: info 版本状态
-- **当前版本**: v0.1.22
-- **分支状态**: 已同步至最新 ✅
-- **文档**: 完全同步，支持中英双语
-:::
+## Navigating the documentation
 
-### 最近同步 (2025-08-19)
+This documentation is organized into the following sections:
 
-从上游合并了 **104 个新提交** (8月14-19日)，带来消息队列、会话记录和 Zed 集成：
+### Get started
 
-#### 🚀 重大功能更新
-- 🎉 **发布 v0.1.22**: 包含消息队列、会话记录服务和 Zed 集成
-- 🎉 **发布 v0.1.21**: 包含工具架构升级和遥测增强
-- 📝 **消息队列实现**: 在流式响应期间实现消息队列功能
-- 💾 **自动会话记录**: 引入核心聊天记录服务实现自动对话保存
-- 🏢 **Zed 编辑器集成**: 通过 Zed 读写文件，支持多文件夹工作空间
-- 🔧 **工具架构现代化**: 大规模迁移工具到声明式模式
+- **[Gemini CLI Quickstart](./get-started/index.md):** Let's get started with
+  Gemini CLI.
+- **[Installation](./get-started/installation.md):** Install and run Gemini CLI.
+- **[Authentication](./get-started/authentication.md):** Authenticate Gemini
+  CLI.
+- **[Configuration](./get-started/configuration.md):** Information on
+  configuring the CLI.
+- **[Examples](./get-started/examples.md):** Example usage of Gemini CLI.
 
-#### 🔧 新功能和改进
-- 🛡️ **隐私设置钩子**: 添加隐私设置钩子和测试
-- 📊 **文件变更跟踪**: 为会话指标添加文件变更跟踪
-- 🔒 **安全字符处理**: 处理文件路径中的特殊字符
-- 🌐 **OAuth 增强**: 支持 GitHub OAuth 和资源参数
-- ⚡ **非递归文件搜索**: 引入非递归文件搜索策略
-- 🔧 **终端设置命令**: 为 Shift+Enter 和 Ctrl+Enter 支持添加终端设置
-- 📱 **文件夹信任管理**: 支持 trustedFolders.json 配置文件
-- 🎨 **UI 改进**: 修复主题行为、输入处理和差异显示
+### CLI
 
-#### 🔧 工具和改进
-- 📦 **Google/genai v1.9.0**: 更新到最新版本并支持 parametersJsonSchema
-- 🎯 **工具摘要**: 集中化 shell 工具摘要和字母排序
-- ⌨️ **快捷键**: CTRL+C 清除输入缓冲区功能
-- 🔧 **MCP 增强**: 支持服务器白名单/黑名单配置
+- **[CLI overview](./cli/index.md):** Overview of the command-line interface.
+- **[Commands](./cli/commands.md):** Description of available CLI commands.
+- **[Enterprise](./cli/enterprise.md):** Gemini CLI for enterprise.
+- **[Themes](./cli/themes.md):** Themes for Gemini CLI.
+- **[Token Caching](./cli/token-caching.md):** Token caching and optimization.
+- **[Tutorials](./cli/tutorials.md):** Tutorials for Gemini CLI.
+- **[Checkpointing](./cli/checkpointing.md):** Documentation for the
+  checkpointing feature.
+- **[Telemetry](./cli/telemetry.md):** Overview of telemetry in the CLI.
+- **[Trusted Folders](./cli/trusted-folders.md):** An overview of the Trusted
+  Folders security feature.
 
----
+### Core
 
-## 🌟 分支增强功能
+- **[Gemini CLI core overview](./core/index.md):** Information about Gemini CLI
+  core.
+- **[Memport](./core/memport.md):** Using the Memory Import Processor.
+- **[Tools API](./core/tools-api.md):** Information on how the core manages and
+  exposes tools.
+- **[Policy Engine](./core/policy-engine.md):** Use the Policy Engine for
+  fine-grained control over tool execution.
 
-此分支通过以下方式提供附加价值：
+### Tools
 
-- **完整的中文翻译** 覆盖所有文档
-- **双语README** 支持便捷的语言切换
-- **实时同步** 上游更改
-- **详细的更新日志** 追踪所有上游修改
+- **[Gemini CLI tools overview](./tools/index.md):** Information about Gemini
+  CLI's tools.
+- **[File System Tools](./tools/file-system.md):** Documentation for the
+  `read_file` and `write_file` tools.
+- **[MCP servers](./tools/mcp-server.md):** Using MCP servers with Gemini CLI.
+- **[Shell Tool](./tools/shell.md):** Documentation for the `run_shell_command`
+  tool.
+- **[Web Fetch Tool](./tools/web-fetch.md):** Documentation for the `web_fetch`
+  tool.
+- **[Web Search Tool](./tools/web-search.md):** Documentation for the
+  `google_web_search` tool.
+- **[Memory Tool](./tools/memory.md):** Documentation for the `save_memory`
+  tool.
+- **[Todo Tool](./tools/todos.md):** Documentation for the `write_todos` tool.
 
----
+### Extensions
 
-## 📋 完整的上游更新日志
+- **[Extensions](./extensions/index.md):** How to extend the CLI with new
+  functionality.
+- **[Get Started with Extensions](./extensions/getting-started-extensions.md):**
+  Learn how to build your own extension.
+- **[Extension Releasing](./extensions/extension-releasing.md):** How to release
+  Gemini CLI extensions.
 
-<!--@include: ./zh/changelog-content.md-->
+### IDE integration
 
+- **[IDE Integration](./ide-integration/index.md):** Connect the CLI to your
+  editor.
+- **[IDE Companion Extension Spec](./ide-integration/ide-companion-spec.md):**
+  Spec for building IDE companion extensions.
+
+### About the Gemini CLI project
+
+- **[Architecture Overview](./architecture.md):** Understand the high-level
+  design of Gemini CLI, including its components and how they interact.
+- **[Contributing & Development Guide](../CONTRIBUTING.md):** Information for
+  contributors and developers, including setup, building, testing, and coding
+  conventions.
+- **[NPM](./npm.md):** Details on how the project's packages are structured.
+- **[Troubleshooting Guide](./troubleshooting.md):** Find solutions to common
+  problems.
+- **[FAQ](./faq.md):** Frequently asked questions.
+- **[Terms of Service and Privacy Notice](./tos-privacy.md):** Information on
+  the terms of service and privacy notices applicable to your use of Gemini CLI.
+- **[Releases](./releases.md):** Information on the project's releases and
+  deployment cadence.
+
+We hope this documentation helps you make the most of Gemini CLI!

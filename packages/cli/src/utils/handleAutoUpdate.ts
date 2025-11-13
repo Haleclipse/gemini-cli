@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { UpdateObject } from '../ui/utils/updateCheck.js';
-import { LoadedSettings } from '../config/settings.js';
-import { getInstallationInfo } from './installationInfo.js';
+import type { UpdateObject } from '../ui/utils/updateCheck.js';
+import type { LoadedSettings } from '../config/settings.js';
+import { getInstallationInfo, PackageManager } from './installationInfo.js';
 import { updateEventEmitter } from './updateEventEmitter.js';
-import { HistoryItem, MessageType } from '../ui/types.js';
+import type { HistoryItem } from '../ui/types.js';
+import { MessageType } from '../ui/types.js';
 import { spawnWrapper } from './spawnWrapper.js';
-import { spawn } from 'child_process';
+import type { spawn } from 'node:child_process';
 
 export function handleAutoUpdate(
   info: UpdateObject | null,
@@ -22,14 +23,29 @@ export function handleAutoUpdate(
     return;
   }
 
-  if (settings.merged.disableUpdateNag) {
+  if (settings.merged.tools?.sandbox || process.env['GEMINI_SANDBOX']) {
+    updateEventEmitter.emit('update-info', {
+      message: `${info.message}\nAutomatic update is not available in sandbox mode.`,
+    });
+    return;
+  }
+
+  if (settings.merged.general?.disableUpdateNag) {
     return;
   }
 
   const installationInfo = getInstallationInfo(
     projectRoot,
-    settings.merged.disableAutoUpdate ?? false,
+    settings.merged.general?.disableAutoUpdate ?? false,
   );
+
+  if (
+    [PackageManager.NPX, PackageManager.PNPX, PackageManager.BUNX].includes(
+      installationInfo.packageManager,
+    )
+  ) {
+    return;
+  }
 
   let combinedMessage = info.message;
   if (installationInfo.updateMessage) {
@@ -40,7 +56,10 @@ export function handleAutoUpdate(
     message: combinedMessage,
   });
 
-  if (!installationInfo.updateCommand || settings.merged.disableAutoUpdate) {
+  if (
+    !installationInfo.updateCommand ||
+    settings.merged.general?.disableAutoUpdate
+  ) {
     return;
   }
   const isNightly = info.update.latest.includes('nightly');
@@ -81,7 +100,7 @@ export function setUpdateHandler(
   setUpdateInfo: (info: UpdateObject | null) => void,
 ) {
   let successfullyInstalled = false;
-  const handleUpdateRecieved = (info: UpdateObject) => {
+  const handleUpdateReceived = (info: UpdateObject) => {
     setUpdateInfo(info);
     const savedMessage = info.message;
     setTimeout(() => {
@@ -131,13 +150,13 @@ export function setUpdateHandler(
     );
   };
 
-  updateEventEmitter.on('update-received', handleUpdateRecieved);
+  updateEventEmitter.on('update-received', handleUpdateReceived);
   updateEventEmitter.on('update-failed', handleUpdateFailed);
   updateEventEmitter.on('update-success', handleUpdateSuccess);
   updateEventEmitter.on('update-info', handleUpdateInfo);
 
   return () => {
-    updateEventEmitter.off('update-received', handleUpdateRecieved);
+    updateEventEmitter.off('update-received', handleUpdateReceived);
     updateEventEmitter.off('update-failed', handleUpdateFailed);
     updateEventEmitter.off('update-success', handleUpdateSuccess);
     updateEventEmitter.off('update-info', handleUpdateInfo);

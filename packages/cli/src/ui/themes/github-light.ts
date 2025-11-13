@@ -5,7 +5,7 @@
  */
 
 import { type ColorsTheme, Theme } from './theme.js';
-import { lightSemanticColors } from './semantic-tokens.js';
+import { interpolateColor } from './color-utils.js';
 
 const githubLightColors: ColorsTheme = {
   type: 'light',
@@ -22,6 +22,7 @@ const githubLightColors: ColorsTheme = {
   DiffRemoved: '#FFCCCC',
   Comment: '#998',
   Gray: '#999',
+  DarkGray: interpolateColor('#999', '#f8f8f8', 0.5),
   GradientColors: ['#458', '#008080'],
 };
 
@@ -145,5 +146,4 @@ export const GitHubLight: Theme = new Theme(
     },
   },
   githubLightColors,
-  lightSemanticColors,
 );

@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Theme, ColorsTheme } from './theme.js';
-import { SemanticColors } from './semantic-tokens.js';
+import type { ColorsTheme } from './theme.js';
+import { Theme } from './theme.js';
+import type { SemanticColors } from './semantic-tokens.js';
 
 const noColorColorsTheme: ColorsTheme = {
   type: 'ansi',
@@ -22,6 +23,7 @@ const noColorColorsTheme: ColorsTheme = {
   DiffRemoved: '',
   Comment: '',
   Gray: '',
+  DarkGray: '',
 };
 
 const noColorSemanticColors: SemanticColors = {
@@ -30,6 +32,7 @@ const noColorSemanticColors: SemanticColors = {
     secondary: '',
     link: '',
     accent: '',
+    response: '',
   },
   background: {
     primary: '',
@@ -45,6 +48,7 @@ const noColorSemanticColors: SemanticColors = {
   ui: {
     comment: '',
     symbol: '',
+    dark: '',
     gradient: [],
   },
   status: {

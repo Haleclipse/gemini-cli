@@ -14,7 +14,7 @@ import { OTLPMetricExporter as OTLPMetricExporterHttp } from '@opentelemetry/exp
 import { CompressionAlgorithm } from '@opentelemetry/otlp-exporter-base';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import {
   BatchSpanProcessor,
   ConsoleSpanExporter,
@@ -28,7 +28,7 @@ import {
   PeriodicExportingMetricReader,
 } from '@opentelemetry/sdk-metrics';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
-import { Config } from '../config/config.js';
+import type { Config } from '../config/config.js';
 import { SERVICE_NAME } from './constants.js';
 import { initializeMetrics } from './metrics.js';
 import { ClearcutLogger } from './clearcut-logger/clearcut-logger.js';
@@ -37,6 +37,13 @@ import {
   FileMetricExporter,
   FileSpanExporter,
 } from './file-exporters.js';
+import {
+  GcpTraceExporter,
+  GcpMetricExporter,
+  GcpLogExporter,
+} from './gcp-exporters.js';
+import { TelemetryTarget } from './index.js';
+import { debugLogger } from '../utils/debugLogger.js';
 
 // For troubleshooting, set the log level to DiagLogLevel.DEBUG
 diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.INFO);
@@ -78,7 +85,7 @@ export function initializeTelemetry(config: Config): void {
     return;
   }
 
-  const resource = new Resource({
+  const resource = resourceFromAttributes({
     [SemanticResourceAttributes.SERVICE_NAME]: SERVICE_NAME,
     [SemanticResourceAttributes.SERVICE_VERSION]: process.version,
     'session.id': config.getSessionId(),
@@ -86,23 +93,40 @@ export function initializeTelemetry(config: Config): void {
 
   const otlpEndpoint = config.getTelemetryOtlpEndpoint();
   const otlpProtocol = config.getTelemetryOtlpProtocol();
+  const telemetryTarget = config.getTelemetryTarget();
+  const useCollector = config.getTelemetryUseCollector();
   const parsedEndpoint = parseOtlpEndpoint(otlpEndpoint, otlpProtocol);
-  const useOtlp = !!parsedEndpoint;
   const telemetryOutfile = config.getTelemetryOutfile();
+  const useOtlp = !!parsedEndpoint && !telemetryOutfile;
+
+  const gcpProjectId =
+    process.env['OTLP_GOOGLE_CLOUD_PROJECT'] ||
+    process.env['GOOGLE_CLOUD_PROJECT'];
+  const useDirectGcpExport =
+    telemetryTarget === TelemetryTarget.GCP && !!gcpProjectId && !useCollector;
 
   let spanExporter:
     | OTLPTraceExporter
     | OTLPTraceExporterHttp
+    | GcpTraceExporter
     | FileSpanExporter
     | ConsoleSpanExporter;
   let logExporter:
     | OTLPLogExporter
     | OTLPLogExporterHttp
+    | GcpLogExporter
     | FileLogExporter
     | ConsoleLogRecordExporter;
   let metricReader: PeriodicExportingMetricReader;
 
-  if (useOtlp) {
+  if (useDirectGcpExport) {
+    spanExporter = new GcpTraceExporter(gcpProjectId);
+    logExporter = new GcpLogExporter(gcpProjectId);
+    metricReader = new PeriodicExportingMetricReader({
+      exporter: new GcpMetricExporter(gcpProjectId),
+      exportIntervalMillis: 30000,
+    });
+  } else if (useOtlp) {
     if (otlpProtocol === 'http') {
       spanExporter = new OTLPTraceExporterHttp({
         url: parsedEndpoint,
@@ -153,7 +177,7 @@ export function initializeTelemetry(config: Config): void {
   sdk = new NodeSDK({
     resource,
     spanProcessors: [new BatchSpanProcessor(spanExporter)],
-    logRecordProcessor: new BatchLogRecordProcessor(logExporter),
+    logRecordProcessors: [new BatchLogRecordProcessor(logExporter)],
     metricReader,
     instrumentations: [new HttpInstrumentation()],
   });
@@ -161,7 +185,7 @@ export function initializeTelemetry(config: Config): void {
   try {
     sdk.start();
     if (config.getDebugMode()) {
-      console.log('OpenTelemetry SDK started successfully.');
+      debugLogger.log('OpenTelemetry SDK started successfully.');
     }
     telemetryInitialized = true;
     initializeMetrics(config);
@@ -175,6 +199,9 @@ export function initializeTelemetry(config: Config): void {
   process.on('SIGINT', () => {
     shutdownTelemetry(config);
   });
+  process.on('exit', () => {
+    shutdownTelemetry(config);
+  });
 }
 
 export async function shutdownTelemetry(config: Config): Promise<void> {
@@ -185,7 +212,7 @@ export async function shutdownTelemetry(config: Config): Promise<void> {
     ClearcutLogger.getInstance()?.shutdown();
     await sdk.shutdown();
     if (config.getDebugMode()) {
-      console.log('OpenTelemetry SDK shut down successfully.');
+      debugLogger.log('OpenTelemetry SDK shut down successfully.');
     }
   } catch (error) {
     console.error('Error shutting down SDK:', error);
